@@ -263,37 +263,15 @@
     margin: 0 0 10px;
   }
 
-  .rsvp-title {
-    font-family: 'Playfair Display', serif;
-    font-weight: 600;
-    font-size: clamp(28px, 7vw, 42px);
-    color: var(--ink);
-    margin: 0 0 8px;
-    line-height: 1.1;
-  }
-
   .rsvp-lead {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: clamp(14px, 3.5vw, 17px);
     color: var(--soft);
-    margin: 0 0 22px;
+    margin: 0 0 28px;
     max-width: 260px;
     line-height: 1.45;
   }
-
-  .rsvp-rule {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 22px;
-  }
-  .rsvp-rule span {
-    width: 28px;
-    height: 1px;
-    background: var(--accent);
-  }
-  .rsvp-rule svg { display: block; flex: none; }
 
   .rsvp-form {
     width: 100%;
@@ -555,13 +533,7 @@
         <div class="slide" data-slide="3">
           <div class="rsvp-card" id="rsvpCard">
             <p class="rsvp-eyebrow">Réponse</p>
-            <h2 class="rsvp-title">RSVP</h2>
             <p class="rsvp-lead">Merci de confirmer votre présence</p>
-            <div class="rsvp-rule" aria-hidden="true">
-              <span></span>
-              <svg width="10" height="10" viewBox="0 0 24 24"><polygon points="12,2 14.5,9 22,9 16,13.5 18.3,21 12,16.6 5.7,21 8,13.5 2,9 9.5,9" fill="none" stroke="var(--accent)" stroke-width="1.5"/></svg>
-              <span></span>
-            </div>
 
             <form class="rsvp-form" id="rsvpForm" novalidate>
               <div class="rsvp-field">
@@ -582,11 +554,6 @@
               <div class="rsvp-field">
                 <label for="rsvpGuests">Nombre de personnes</label>
                 <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
-              </div>
-
-              <div class="rsvp-field">
-                <label for="rsvpMsg">Message <span style="font-weight:400;letter-spacing:0;text-transform:none;opacity:.7;">(optionnel)</span></label>
-                <textarea id="rsvpMsg" name="message" rows="2"></textarea>
               </div>
 
               <button type="submit" class="rsvp-submit" id="rsvpSubmit">Envoyer</button>
@@ -691,8 +658,7 @@
       var payload = {
         name: (document.getElementById('rsvpName').value || '').trim(),
         presence: presenceEl ? presenceEl.value : '',
-        guests: document.getElementById('rsvpGuests').value || '1',
-        message: (document.getElementById('rsvpMsg').value || '').trim()
+        guests: document.getElementById('rsvpGuests').value || '1'
       };
 
       if (rsvpSubmit) {
