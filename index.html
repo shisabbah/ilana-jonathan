@@ -33,21 +33,21 @@
   }
 
   /* ========== PAGE D'ENTRÉE : papier + logo ========== */
+  /*
+    Centrage calculé pour tout écran :
+    - gate = viewport fixe (inset: 0)
+    - logo = absolute left/top 50% + translate(-50%, -50%)
+    - taille = vmin (plus petit côté) pour garder proportions & centre
+  */
   .gate {
     position: fixed;
     inset: 0;
     z-index: 10;
     width: 100%;
     height: 100%;
-    min-height: 100vh;
-    min-height: 100dvh;
     margin: 0;
+    padding: 0;
     max-width: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    /* Fond papier plein écran */
     background-color: var(--bg);
     background-image: url('fondpapier.png');
     background-size: cover;
@@ -68,23 +68,25 @@
     border: none;
     background: transparent;
     padding: 0;
-    margin: 0 auto;
+    margin: 0;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: min(420px, 72vw);
-    flex-shrink: 0;
     font: inherit;
-    /* Montée douce vers le haut au clic */
-    transform: translate3d(0, 0, 0);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* Largeur = 58% du plus petit côté de l'écran, plafonnée */
+    width: min(58vmin, 420px);
+    max-width: calc(100% - 48px);
+    /* Vrai centre géométrique, tous viewports */
+    transform: translate(-50%, -50%);
     opacity: 1;
     transition:
       transform 1.15s cubic-bezier(0.33, 0.1, 0.2, 1),
       opacity 0.85s ease 0.15s;
   }
   .gate.is-rising .logo-btn {
-    transform: translate3d(0, -120vh, 0);
+    /* Conserve le -50% horizontal, monte hors écran */
+    transform: translate(-50%, calc(-50% - 120vh));
     opacity: 0;
   }
   .logo-btn:focus-visible {
@@ -94,17 +96,11 @@
   .logo-btn img {
     width: 100%;
     height: auto;
-    max-width: 100%;
+    aspect-ratio: 1;
     display: block;
-    margin: 0 auto;
     object-fit: contain;
     object-position: center;
-  }
-
-  @media (max-width: 600px) {
-    .logo-btn {
-      width: min(300px, 78vw);
-    }
+    pointer-events: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -112,7 +108,7 @@
     .logo-btn,
     #carousel { transition: none !important; }
     .gate.is-rising .logo-btn {
-      transform: none;
+      transform: translate(-50%, -50%);
       opacity: 0;
     }
   }
@@ -206,15 +202,13 @@
   <!-- ===================== LOGO SUR PAPIER ===================== -->
   <div id="gate" class="gate">
     <button id="openBtn" class="logo-btn" aria-label="Entrer dans l'invitation">
-      <img src="logowf.png" alt="Monogramme" width="356" height="356" decoding="async">
+      <img src="logowf.png" alt="Monogramme" width="366" height="366" decoding="async">
     </button>
   </div>
 
   <!-- ===================== CARROUSEL ===================== -->
   <div id="carousel">
   <div style="position: relative; z-index: 2; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 32px 16px;">
-
-    <div style="font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 20px; color: var(--ink);">Ilana &amp; Jonathan</div>
 
     <div class="carousel-row">
 
@@ -236,11 +230,14 @@
         </div>
 
         <div class="slide" data-slide="1">
-          <div class="slide-placeholder">
-            <svg width="46" height="46" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="15" rx="1.5" fill="none" stroke="var(--accent)" stroke-width="1.3"/><circle cx="8.5" cy="9.5" r="1.6" fill="none" stroke="var(--accent)" stroke-width="1.2"/><path d="M4 16 L9 11 L13 15 L16 12 L20 16" fill="none" stroke="var(--accent)" stroke-width="1.3"/></svg>
-            <div style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 15px; letter-spacing: 2px; color: var(--accent-deep); text-transform: uppercase;">Mairie</div>
-            <div style="font-size: 14px; color: var(--soft); font-style: italic;">emplacement pour ton PNG</div>
-          </div>
+          <img
+            class="slide-card"
+            src="mairie.png"
+            alt="Faire-part Mairie — Ilana &amp; Jonathan"
+            width="1240"
+            height="1748"
+            decoding="async"
+          >
         </div>
 
         <div class="slide" data-slide="2">
