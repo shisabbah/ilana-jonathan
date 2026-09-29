@@ -265,14 +265,14 @@
   }
 
   .rsvp-lead {
-    font-family: 'Great Vibes', cursive;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
     font-weight: 400;
-    font-style: normal;
-    font-size: clamp(26px, 6.5vw, 36px);
-    color: var(--ink);
-    margin: 0 0 32px;
-    max-width: 280px;
-    line-height: 1.25;
+    font-size: clamp(14px, 3.5vw, 17px);
+    color: var(--soft);
+    margin: 0 0 28px;
+    max-width: 260px;
+    line-height: 1.45;
   }
 
   .rsvp-form {
@@ -609,7 +609,7 @@
    * Colle ici l'URL de ton Apps Script (Déployer → Application Web).
    * Voir le fichier rsvp-google-apps-script.gs pour la procédure.
    */
-  var RSVP_SCRIPT_URL = '';
+  var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVVhnRpjEKeAosWOzwWkkvgvrwpMlbkJ6H3BXjbr-AlzO-1nu6ir3Wvhmw5l6Z81XkfQ/exec';
 
   function render() {
     slides.forEach(function (el) {
