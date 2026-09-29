@@ -39,7 +39,7 @@
   --ink: #3B2E42;
   --soft: #8A7B90;
 }
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); }
@@ -255,22 +255,24 @@
 
   .rsvp-eyebrow {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: clamp(11px, 2.8vw, 13px);
-    letter-spacing: 0.35em;
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(15px, 3.6vw, 18px);
+    letter-spacing: 0.28em;
     text-transform: uppercase;
     color: var(--accent-deep);
-    margin: 0 0 10px;
+    margin: 0 0 14px;
   }
 
   .rsvp-lead {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: clamp(14px, 3.5vw, 17px);
-    color: var(--soft);
-    margin: 0 0 28px;
-    max-width: 260px;
-    line-height: 1.45;
+    font-family: 'Great Vibes', cursive;
+    font-weight: 400;
+    font-style: normal;
+    font-size: clamp(26px, 6.5vw, 36px);
+    color: var(--ink);
+    margin: 0 0 32px;
+    max-width: 280px;
+    line-height: 1.25;
   }
 
   .rsvp-form {
@@ -278,19 +280,20 @@
     max-width: 280px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     text-align: left;
   }
 
   .rsvp-field label {
     display: block;
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 11px;
-    letter-spacing: 0.22em;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--accent-deep);
-    margin-bottom: 6px;
+    margin-bottom: 7px;
   }
 
   .rsvp-field input,
@@ -298,8 +301,9 @@
   .rsvp-field select {
     width: 100%;
     box-sizing: border-box;
-    font-family: 'EB Garamond', Georgia, serif;
-    font-size: 16px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    font-size: 17px;
     color: var(--ink);
     background: rgba(253, 251, 250, 0.72);
     border: none;
@@ -335,8 +339,11 @@
   }
   .rsvp-choice label {
     margin: 0;
-    letter-spacing: 0.12em;
-    font-size: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 500;
+    font-style: italic;
+    letter-spacing: 0.14em;
+    font-size: 14px;
     text-align: center;
     padding: 10px 8px;
     border: 1px solid var(--accent);
@@ -361,9 +368,10 @@
     margin-top: 8px;
     align-self: center;
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.28em;
+    font-weight: 500;
+    font-style: italic;
+    font-size: 14px;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent-deep);
     background: transparent;
@@ -409,12 +417,12 @@
   .rsvp-card.is-sent .rsvp-thanks { display: flex; }
   .rsvp-thanks p {
     margin: 0;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 18px;
+    font-family: 'Great Vibes', cursive;
+    font-style: normal;
+    font-size: 28px;
     color: var(--ink);
-    line-height: 1.5;
-    max-width: 240px;
+    line-height: 1.35;
+    max-width: 260px;
   }
 
   /* Flèches discrètes, style gravure */
