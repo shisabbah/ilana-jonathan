@@ -32,7 +32,7 @@
     font-family: 'EB Garamond', Georgia, serif;
   }
 
-  /* ========== LOGO D'ENTRÉE (plein écran, image seule) ========== */
+  /* ========== PAGE D'ENTRÉE : papier + logo ========== */
   .gate {
     position: fixed;
     inset: 0;
@@ -42,10 +42,19 @@
     height: 100dvh;
     margin: 0;
     max-width: none;
-    background: var(--bg);
-    transition: opacity 0.9s ease, visibility 0.9s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Fond papier plein écran */
+    background-color: var(--bg);
+    background-image: url('fondpapier.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    transition: opacity 0.7s ease 0.15s, visibility 0.7s ease 0.15s;
   }
-  .gate.is-fading {
+  .gate.is-done {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -60,26 +69,38 @@
     margin: 0;
     cursor: pointer;
     display: block;
-    width: 100%;
-    height: 100%;
+    width: min(520px, 78vw);
     font: inherit;
+    /* Montée douce vers le haut au clic */
+    transform: translateY(0);
+    opacity: 1;
+    transition:
+      transform 1.15s cubic-bezier(0.33, 0.1, 0.2, 1),
+      opacity 0.85s ease 0.15s;
+  }
+  .gate.is-rising .logo-btn {
+    transform: translateY(-120vh);
+    opacity: 0;
   }
   .logo-btn:focus-visible {
     outline: 2px solid var(--accent-deep);
-    outline-offset: -8px;
+    outline-offset: 10px;
   }
-  /* Image entière, agrandie au maximum dans la fenêtre (sans crop ni déformation) */
   .logo-btn img {
     width: 100%;
-    height: 100%;
+    height: auto;
     display: block;
     object-fit: contain;
-    object-position: center;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .gate,
+    .logo-btn,
     #carousel { transition: none !important; }
+    .gate.is-rising .logo-btn {
+      transform: none;
+      opacity: 0;
+    }
   }
 
   /* ========== CARROUSEL ========== */
@@ -168,10 +189,10 @@
 <body>
 <div class="stage">
 
-  <!-- ===================== LOGO ===================== -->
+  <!-- ===================== LOGO SUR PAPIER ===================== -->
   <div id="gate" class="gate">
     <button id="openBtn" class="logo-btn" aria-label="Entrer dans l'invitation">
-      <img src="logo2.png" alt="Monogramme Ilana &amp; Jonathan" width="1024" height="1024" decoding="async">
+      <img src="logowf.png" alt="Monogramme" width="449" height="348" decoding="async">
     </button>
   </div>
 
@@ -262,12 +283,17 @@
     if (opening) return;
     opening = true;
 
-    gate.classList.add('is-fading');
+    // Le logo monte, puis la page carrousel apparaît
+    gate.classList.add('is-rising');
     carousel.classList.add('is-visible');
 
+    var riseMs = reduceMotion ? 0 : 1100;
     setTimeout(function () {
-      gate.style.display = 'none';
-    }, reduceMotion ? 0 : 950);
+      gate.classList.add('is-done');
+      setTimeout(function () {
+        gate.style.display = 'none';
+      }, reduceMotion ? 0 : 700);
+    }, riseMs);
   });
 
   prevBtn.addEventListener('click', function () {
