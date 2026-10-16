@@ -38,10 +38,10 @@
     Marges = zone crème du longfond (en % de la largeur = scale image).
     Plus généreux à droite/gauche pour éviter le texte dans les fleurs.
   */
-  --frame-pad-t: 42%;
-  /* Plus d’air latéral = le texte (dont la date) reste dans la crème */
+  /* padding % = relatif à la largeur ; avec aspect-ratio du fond */
+  --frame-pad-t: 40%;
   --frame-pad-x: 22%;
-  --frame-pad-b: 0%; /* le bas décoratif est un bandeau ::after séparé */
+  --frame-pad-b: 32%; /* bas floral dégagé */
 }
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap');
@@ -138,32 +138,37 @@ button { font: inherit; }
   gap: 0.85rem;
 }
 
-/* Cadre floral : une seule fois en haut — crème en dessous (pas de doublon) */
+/* Cadre floral : l’image fixe la hauteur → bas floral toujours visible */
 .invite {
   width: 100%;
   max-width: 100%;
   position: relative;
   overflow: hidden;
   background-color: var(--paper);
+  /* 724×2172 — min-height = hauteur naturelle du fond à cette largeur */
+  aspect-ratio: 724 / 2172;
   background-image: url('longfond.png');
   background-repeat: no-repeat;
-  background-size: 100% auto;
+  background-size: 100% 100%;
   background-position: top center;
 }
 
 .invite-inner {
-  position: relative;
+  position: absolute;
+  inset: 0;
   z-index: 1;
   width: 100%;
   box-sizing: border-box;
   padding:
     var(--frame-pad-t)
     var(--frame-pad-x)
-    clamp(2.5rem, 8vw, 3.5rem);
+    var(--frame-pad-b);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* RSVP hors cadre floral */
@@ -567,8 +572,9 @@ button { font: inherit; }
 
 @media (max-width: 380px) {
   :root {
-    --frame-pad-t: 44%;
+    --frame-pad-t: 38%;
     --frame-pad-x: 23%;
+    --frame-pad-b: 30%;
   }
   .event-date { font-size: 0.84rem; }
   .rsvp-panel {
@@ -580,8 +586,9 @@ button { font: inherit; }
 /* À partir de ~430px : 2 colonnes familles si assez d’espace */
 @media (min-width: 430px) {
   :root {
-    --frame-pad-t: 40%;
+    --frame-pad-t: 38%;
     --frame-pad-x: 20%;
+    --frame-pad-b: 32%;
   }
   .invite-page { gap: 1rem; }
   .rsvp-panel {
@@ -593,8 +600,9 @@ button { font: inherit; }
 
 @media (min-width: 768px) {
   :root {
-    --frame-pad-t: 38%;
+    --frame-pad-t: 36%;
     --frame-pad-x: 18%;
+    --frame-pad-b: 34%;
   }
   .invite-page {
     max-width: 28rem;
