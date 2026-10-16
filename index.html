@@ -2,13 +2,10 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ilana &amp; Jonathan — Faire-part de mariage</title>
 <meta name="description" content="Ilana &amp; Jonathan ont le plaisir de vous convier à leur mariage.">
 
-<!-- Aperçu du lien (WhatsApp, iMessage, Facebook, etc.)
-     Important : og:image doit être une URL absolue https://...
-     Mets ici l'URL publique de ton site une fois en ligne. -->
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Ilana &amp; Jonathan">
@@ -16,542 +13,656 @@
 <meta property="og:description" content="Ilana &amp; Jonathan ont le plaisir de vous convier à leur mariage.">
 <meta property="og:url" content="https://shisabbah.github.io/ilana-jonathan/">
 <meta property="og:image" content="https://shisabbah.github.io/ilana-jonathan/logo2.png">
-<meta property="og:image:secure_url" content="https://shisabbah.github.io/ilana-jonathan/logo2.png">
 <meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1024">
 <meta property="og:image:height" content="1024">
 <meta property="og:image:alt" content="Monogramme Ilana &amp; Jonathan">
-
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ilana &amp; Jonathan — Faire-part de mariage">
 <meta name="twitter:description" content="Ilana &amp; Jonathan ont le plaisir de vous convier à leur mariage.">
 <meta name="twitter:image" content="https://shisabbah.github.io/ilana-jonathan/logo2.png">
-
 <link rel="icon" type="image/png" href="logo2.png">
 <link rel="apple-touch-icon" href="logo2.png">
+
 <style>
 :root {
   --accent: #B7A0CC;
   --accent-deep: #7C5E96;
   --accent-light: #D9CCE6;
-  --bg: #FAF7F6;
-  --card-bg: #FDFBFA;
+  --bg: #F6F2ED;
+  --paper: #FBF8F4;
   --ink: #3B2E42;
   --soft: #8A7B90;
+  --gold: #A8926A;
+  --invite-w: min(100%, 26.5rem);
+  --safe-x: max(1rem, env(safe-area-inset-left));
+  --safe-r: max(1rem, env(safe-area-inset-right));
 }
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap');
 
-  *, *::before, *::after { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); }
-  a { color: inherit; text-decoration: none; }
-  button { font: inherit; }
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Great+Vibes&display=swap');
 
-  .stage {
-    width: 100%;
-    max-width: 1000px;
-    min-height: 100vh;
-    margin: 0 auto;
-    position: relative;
-    background: var(--bg);
-    overflow: hidden;
-    font-family: 'EB Garamond', Georgia, serif;
-  }
+*, *::before, *::after { box-sizing: border-box; }
 
-  /* ========== PAGE D'ENTRÉE : papier + logo ========== */
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+button { font: inherit; }
+
+/* ========== LOGO ========== */
+.gate {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  background-color: var(--bg);
+  background-image: url('fondpapier.png');
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.7s ease 0.1s, visibility 0.7s ease 0.1s;
+}
+.gate.is-done {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.logo-btn {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: min(58vmin, 22rem);
+  max-width: calc(100vw - 3rem);
+  transform: translateY(0);
+  opacity: 1;
+  transition:
+    transform 1.1s cubic-bezier(0.33, 0.1, 0.2, 1),
+    opacity 0.8s ease 0.1s;
+}
+.gate.is-rising .logo-btn {
+  transform: translateY(-110vh);
+  opacity: 0;
+}
+.logo-btn:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 0.6rem;
+}
+.logo-btn img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* ========== PAGE INVITATION ========== */
+#invite {
+  display: none;
+  opacity: 0;
+  transition: opacity 0.85s ease;
+}
+#invite.is-visible {
+  display: block;
+  opacity: 1;
+}
+
+.invite-page {
+  min-height: 100dvh;
+  padding:
+    max(1.25rem, env(safe-area-inset-top))
+    var(--safe-r)
+    max(2rem, env(safe-area-inset-bottom))
+    var(--safe-x);
+  display: flex;
+  justify-content: center;
+}
+
+/* Colonne : cadre floral + contenu dans la zone crème */
+.invite {
+  width: var(--invite-w);
+  position: relative;
+  background-color: var(--paper);
+  /* longfond en haut + bas, crème au milieu (pas d’étirement) */
+  background-image:
+    url('longfond.png'),
+    url('longfond.png');
+  background-repeat: no-repeat, no-repeat;
+  background-size: 100% auto, 100% auto;
+  background-position: top center, bottom center;
+  box-shadow: 0 1.25rem 2.75rem -1.5rem rgba(59, 46, 66, 0.14);
+}
+
+.invite-inner {
+  position: relative;
+  z-index: 1;
   /*
-    Centrage calculé pour tout écran :
-    - gate = viewport fixe (inset: 0)
-    - logo = absolute left/top 50% + translate(-50%, -50%)
-    - taille = vmin (plus petit côté) pour garder proportions & centre
+    Marge haute généreuse : le drapé + fleurs du longfond
+    occupent ~18–22 % du haut de l’image — on décale le texte en dessous.
   */
-  .gate {
-    position: fixed;
-    inset: 0;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    max-width: none;
-    background-color: var(--bg);
-    background-image: url('fondpapier.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    overflow: hidden;
-    transition: opacity 0.7s ease 0.15s, visibility 0.7s ease 0.15s;
-  }
-  .gate.is-done {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-  }
+  padding:
+    clamp(7.5rem, 38vw, 11rem)
+    clamp(1.85rem, 11vw, 3rem)
+    clamp(5.5rem, 26vw, 8rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
 
-  .logo-btn {
-    appearance: none;
-    -webkit-appearance: none;
-    border: none;
-    background: transparent;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
-    font: inherit;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    /* Largeur = 58% du plus petit côté de l'écran, plafonnée */
-    width: min(58vmin, 420px);
-    max-width: calc(100% - 48px);
-    /* Vrai centre géométrique, tous viewports */
-    transform: translate(-50%, -50%);
-    opacity: 1;
-    transition:
-      transform 1.15s cubic-bezier(0.33, 0.1, 0.2, 1),
-      opacity 0.85s ease 0.15s;
+/* Séparateur entre blocs */
+.sep {
+  width: min(100%, 11rem);
+  margin: clamp(1.75rem, 5vw, 2.35rem) auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+}
+.sep::before,
+.sep::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--accent);
+  opacity: 0.85;
+}
+.sep-dot {
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.9;
+  flex: none;
+}
+
+.block {
+  width: 100%;
+  max-width: 20rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.eyebrow {
+  margin: 0 0 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+/* —— Mairie —— */
+.names {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: clamp(1.65rem, 7.2vw, 2.15rem);
+  letter-spacing: 0.1em;
+  line-height: 1.12;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.names .amp {
+  display: block;
+  margin: 0.15em 0;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.52em;
+  letter-spacing: 0;
+  color: var(--gold);
+  text-transform: none;
+}
+
+.kicker {
+  margin: 1.1rem 0 0.15rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.oui {
+  margin: 0.15rem 0 0.85rem;
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(2.6rem, 12vw, 3.4rem);
+  line-height: 1;
+  color: var(--accent-deep);
+}
+
+.date-line {
+  margin: 0 0 0.4rem;
+  font-size: clamp(0.98rem, 3.8vw, 1.1rem);
+  color: var(--ink);
+}
+
+.place {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.note {
+  margin: 1rem 0 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--soft);
+}
+
+/* —— Houppa —— */
+.hebrew {
+  margin: 0 0 1.15rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(0.92rem, 3.6vw, 1.05rem);
+  line-height: 1.55;
+  color: var(--gold);
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+.families {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem 1rem;
+  margin: 0 0 1.15rem;
+  font-size: clamp(0.72rem, 3.1vw, 0.82rem);
+  line-height: 1.6;
+  color: var(--ink);
+}
+.families .col-a { text-align: left; }
+.families .col-b { text-align: right; }
+
+.announce {
+  margin: 0 0 1.15rem;
+  max-width: 17rem;
+  font-size: clamp(0.78rem, 3.2vw, 0.88rem);
+  letter-spacing: 0.04em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+
+.couple {
+  margin: 0;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: clamp(1.7rem, 7.5vw, 2.25rem);
+  letter-spacing: 0.08em;
+  line-height: 1.08;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+.couple .he {
+  display: block;
+  margin-top: 0.2em;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: 0.36em;
+  letter-spacing: 0.06em;
+  color: var(--gold);
+  text-transform: none;
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+.couple .amp {
+  display: block;
+  margin: 0.25em 0;
+  font-style: italic;
+  font-weight: 500;
+  font-size: 0.48em;
+  letter-spacing: 0;
+  color: var(--gold);
+  text-transform: none;
+}
+
+.lead {
+  margin: 1.1rem 0 0.55rem;
+  max-width: 17.5rem;
+  font-size: clamp(0.9rem, 3.5vw, 1rem);
+  line-height: 1.45;
+  color: var(--soft);
+}
+
+.event-date {
+  margin: 0 0 0.55rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  font-size: clamp(1.05rem, 4.4vw, 1.25rem);
+  color: var(--accent-deep);
+}
+
+.venue {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+}
+
+.addr {
+  margin: 0.25rem 0 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--soft);
+}
+
+.memorial {
+  margin: 1.35rem 0 0;
+  max-width: 17.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--soft);
+}
+
+/* —— RSVP —— */
+.rsvp-lead {
+  margin: 0 0 1.35rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: clamp(0.95rem, 3.6vw, 1.05rem);
+  color: var(--soft);
+}
+
+.rsvp-form {
+  width: 100%;
+  max-width: 16.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.field input[type="text"],
+.field input[type="number"] {
+  width: 100%;
+  padding: 0.55rem 0.15rem;
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  border-radius: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field input:focus {
+  border-bottom-color: var(--accent-deep);
+}
+
+.choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.choice label {
+  margin: 0;
+  padding: 0.7rem 0.5rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  color: var(--soft);
+  border: 1px solid var(--accent);
+  background: rgba(251, 248, 244, 0.55);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+.choice input:checked + label {
+  border-color: var(--accent-deep);
+  color: var(--accent-deep);
+  background: var(--accent-light);
+}
+.choice input:focus-visible + label {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 2px;
+}
+
+.submit {
+  appearance: none;
+  align-self: center;
+  margin-top: 0.35rem;
+  padding: 0.75rem 1.6rem;
+  min-height: 2.75rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.82rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: transparent;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+.submit:hover,
+.submit:focus-visible {
+  background: var(--accent-light);
+  border-color: var(--accent-deep);
+  outline: none;
+}
+.submit:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.rsvp-error {
+  display: none;
+  margin: 0;
+  text-align: center;
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.88rem;
+  color: #8B4A5A;
+}
+.rsvp-block.has-error .rsvp-error { display: block; }
+
+.rsvp-thanks {
+  display: none;
+  margin: 0;
+  max-width: 15rem;
+  font-family: 'Great Vibes', cursive;
+  font-size: 1.65rem;
+  line-height: 1.35;
+  color: var(--ink);
+}
+.rsvp-block.is-sent .rsvp-form { display: none; }
+.rsvp-block.is-sent .rsvp-thanks { display: block; }
+
+/* Tablette / grand téléphone */
+@media (min-width: 480px) {
+  :root { --invite-w: min(100%, 28rem); }
+  .invite-inner {
+    padding-top: clamp(8.5rem, 32vw, 12rem);
+    padding-left: 3.25rem;
+    padding-right: 3.25rem;
   }
+}
+
+/* Desktop : carte centrée, plus d’air */
+@media (min-width: 768px) {
+  .invite-page {
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
+  }
+  :root { --invite-w: 30rem; }
+  .invite {
+    border-radius: 2px;
+  }
+  .invite-inner {
+    padding-top: 12.5rem;
+    padding-bottom: 9rem;
+  }
+  .families {
+    font-size: 0.86rem;
+    gap: 1rem 1.25rem;
+  }
+}
+
+/* Très petit écran */
+@media (max-width: 360px) {
+  .invite-inner {
+    padding-top: 8.25rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  .families {
+    font-size: 0.68rem;
+    gap: 0.5rem 0.65rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gate, .logo-btn, #invite { transition: none !important; }
   .gate.is-rising .logo-btn {
-    /* Conserve le -50% horizontal, monte hors écran */
-    transform: translate(-50%, calc(-50% - 120vh));
+    transform: none;
     opacity: 0;
   }
-  .logo-btn:focus-visible {
-    outline: 2px solid var(--accent-deep);
-    outline-offset: 10px;
-  }
-  .logo-btn img {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1;
-    display: block;
-    object-fit: contain;
-    object-position: center;
-    pointer-events: none;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .gate,
-    .logo-btn,
-    #carousel { transition: none !important; }
-    .gate.is-rising .logo-btn {
-      transform: translate(-50%, -50%);
-      opacity: 0;
-    }
-  }
-
-  /* ========== CARROUSEL — présentation papeterie ========== */
-  #carousel {
-    display: none;
-    opacity: 0;
-    transition: opacity 1s ease;
-  }
-  #carousel.is-visible {
-    display: block;
-    opacity: 1;
-  }
-
-  .carousel-inner {
-    position: relative;
-    z-index: 2;
-    min-height: 100vh;
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: clamp(16px, 3vh, 40px) 12px;
-    box-sizing: border-box;
-    /* Même papier que l'entrée — continuité visuelle */
-    background-color: var(--bg);
-    background-image: url('fondpapier.png');
-    background-size: cover;
-    background-position: center;
-  }
-
-  .carousel-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(8px, 2vw, 28px);
-    width: 100%;
-    max-width: 100%;
-  }
-
-  /*
-    Carte entière visible sur tout écran :
-    largeur plafonnée par la largeur dispo ET par la hauteur dispo (ratio 1240×1748)
-  */
-  .card-slot {
-    --card-max-h: calc(100dvh - 56px);
-    position: relative;
-    width: min(
-      340px,
-      calc(100vw - 96px),
-      calc(var(--card-max-h) * 1240 / 1748)
-    );
-    aspect-ratio: 1240 / 1748;
-    max-height: var(--card-max-h);
-    flex: none;
-    padding: 0;
-    background: transparent;
-    border: none;
-    box-shadow:
-      0 18px 40px -18px rgba(59, 46, 66, 0.14),
-      0 6px 14px -8px rgba(124, 94, 150, 0.08);
-  }
-
-  .slide {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.55s ease, visibility 0.55s ease;
-    z-index: 1;
-  }
-  .slide.is-active {
-    opacity: 1;
-    visibility: visible;
-    z-index: 1;
-  }
-
-  .slide-card {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: contain;
-    object-position: center;
-    background: var(--card-bg);
-  }
-
-  .slide-placeholder {
-    width: 100%;
-    height: 100%;
-    background: var(--card-bg);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    text-align: center;
-    padding: 40px;
-  }
-
-  /* ========== RSVP (dernière slide) ========== */
-  .rsvp-card {
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: clamp(20px, 5%, 40px) clamp(18px, 6%, 36px);
-    background-color: var(--bg);
-    background-image: url('fondpapier.png');
-    background-size: cover;
-    background-position: center;
-    overflow: auto;
-  }
-
-  .rsvp-eyebrow {
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: clamp(15px, 3.6vw, 18px);
-    letter-spacing: 0.28em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    margin: 0 0 14px;
-  }
-
-  .rsvp-lead {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: clamp(14px, 3.5vw, 17px);
-    color: var(--soft);
-    margin: 0 0 28px;
-    max-width: 260px;
-    line-height: 1.45;
-  }
-
-  .rsvp-form {
-    width: 100%;
-    max-width: 280px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    text-align: left;
-  }
-
-  .rsvp-field label {
-    display: block;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: 13px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    margin-bottom: 7px;
-  }
-
-  .rsvp-field input,
-  .rsvp-field textarea,
-  .rsvp-field select {
-    width: 100%;
-    box-sizing: border-box;
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 500;
-    font-size: 17px;
-    color: var(--ink);
-    background: rgba(253, 251, 250, 0.72);
-    border: none;
-    border-bottom: 1px solid var(--accent);
-    border-radius: 0;
-    padding: 8px 2px;
-    outline: none;
-    appearance: none;
-    -webkit-appearance: none;
-    transition: border-color 0.25s ease, background-color 0.25s ease;
-  }
-  .rsvp-field input:focus,
-  .rsvp-field textarea:focus,
-  .rsvp-field select:focus {
-    border-bottom-color: var(--accent-deep);
-    background: rgba(253, 251, 250, 0.92);
-  }
-  .rsvp-field textarea {
-    resize: none;
-    min-height: 56px;
-    line-height: 1.4;
-  }
-
-  .rsvp-choice {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-  .rsvp-choice input {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .rsvp-choice label {
-    margin: 0;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-style: italic;
-    letter-spacing: 0.14em;
-    font-size: 14px;
-    text-align: center;
-    padding: 10px 8px;
-    border: 1px solid var(--accent);
-    color: var(--soft);
-    cursor: pointer;
-    background: rgba(253, 251, 250, 0.55);
-    transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
-  }
-  .rsvp-choice input:checked + label {
-    border-color: var(--accent-deep);
-    color: var(--accent-deep);
-    background: var(--accent-light);
-  }
-  .rsvp-choice input:focus-visible + label {
-    outline: 2px solid var(--accent-deep);
-    outline-offset: 2px;
-  }
-
-  .rsvp-submit {
-    appearance: none;
-    -webkit-appearance: none;
-    margin-top: 8px;
-    align-self: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-weight: 500;
-    font-style: italic;
-    font-size: 14px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent-deep);
-    background: transparent;
-    border: 1px solid var(--accent);
-    padding: 12px 28px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-  }
-  .rsvp-submit:hover,
-  .rsvp-submit:focus-visible {
-    background: var(--accent-light);
-    border-color: var(--accent-deep);
-    outline: none;
-  }
-
-  .rsvp-submit:disabled {
-    opacity: 0.55;
-    cursor: wait;
-  }
-
-  .rsvp-error {
-    display: none;
-    margin: 0;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 14px;
-    color: #8B4A5A;
-    text-align: center;
-    line-height: 1.4;
-  }
-  .rsvp-card.has-error .rsvp-error {
-    display: block;
-  }
-
-  .rsvp-thanks {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    padding: 12px;
-  }
-  .rsvp-card.is-sent .rsvp-form { display: none; }
-  .rsvp-card.is-sent .rsvp-thanks { display: flex; }
-  .rsvp-thanks p {
-    margin: 0;
-    font-family: 'Great Vibes', cursive;
-    font-style: normal;
-    font-size: 28px;
-    color: var(--ink);
-    line-height: 1.35;
-    max-width: 260px;
-  }
-
-  /* Flèches discrètes, style gravure */
-  .nav-btn {
-    all: unset;
-    cursor: pointer;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--accent);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-    background: var(--card-bg);
-    color: var(--accent-deep);
-    transition:
-      border-color 0.3s ease,
-      background-color 0.3s ease,
-      transform 0.3s ease;
-  }
-  .nav-btn:hover {
-    border-color: var(--accent-deep);
-    background-color: var(--accent-light);
-    transform: scale(1.04);
-  }
-  .nav-btn:focus-visible {
-    outline: 2px solid var(--accent-deep);
-    outline-offset: 3px;
-  }
-  .nav-btn svg {
-    display: block;
-  }
-
-  @media (max-width: 600px) {
-    .carousel-row { gap: 6px; }
-    .nav-btn { width: 34px; height: 34px; }
-    .card-slot {
-      --card-max-h: calc(100dvh - 48px);
-      width: min(
-        300px,
-        calc(100vw - 80px),
-        calc(var(--card-max-h) * 1240 / 1748)
-      );
-    }
-  }
-
-  @media (max-height: 700px) {
-    .card-slot {
-      --card-max-h: calc(100dvh - 40px);
-      width: min(
-        280px,
-        calc(100vw - 88px),
-        calc(var(--card-max-h) * 1240 / 1748)
-      );
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .slide { transition: none !important; }
-  }
+}
 </style>
 </head>
 <body>
-<div class="stage">
 
-  <!-- ===================== LOGO SUR PAPIER ===================== -->
   <div id="gate" class="gate">
     <button id="openBtn" class="logo-btn" aria-label="Entrer dans l'invitation">
-      <img src="logowf.png" alt="Monogramme" width="366" height="366" decoding="async">
+      <img src="logowf.png" alt="Monogramme Ilana et Jonathan" width="366" height="366" decoding="async">
     </button>
   </div>
 
-  <!-- ===================== CARROUSEL ===================== -->
-  <div id="carousel">
-  <div class="carousel-inner">
+  <main id="invite">
+    <div class="invite-page">
+      <article class="invite">
+        <div class="invite-inner">
 
-    <div class="carousel-row">
+          <!-- Mairie -->
+          <section class="block" aria-labelledby="labelMairie">
+            <p class="eyebrow" id="labelMairie">La Mairie</p>
+            <h1 class="names">
+              Ilana
+              <span class="amp">&amp;</span>
+              Jonathan
+            </h1>
+            <p class="kicker">Se diront</p>
+            <p class="oui">Oui</p>
+            <p class="date-line">Le mardi 25 mai à 15h00</p>
+            <p class="place">Mairie Bagatelle</p>
+            <p class="note">Un après-mairie sera organisé</p>
+          </section>
 
-      <button id="prevBtn" class="nav-btn" aria-label="Carte précédente">
-        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 4 L7 12 L15 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+          <div class="sep" aria-hidden="true"><span class="sep-dot"></span></div>
 
-      <div class="card-slot" aria-live="polite">
+          <!-- Houppa -->
+          <section class="block" aria-labelledby="labelHouppa">
+            <p class="eyebrow" id="labelHouppa">La Houppa</p>
+            <p class="hebrew" lang="he">
+              קול ששון וקול שמחה<br>
+              קול חתן וקול כלה
+            </p>
 
-        <div class="slide is-active" data-slide="0">
-          <img
-            class="slide-card"
-            src="accueil.jpg"
-            alt="Faire-part Accueil — Ilana &amp; Jonathan, 25 mai 2027"
-            width="1240"
-            height="1748"
-            decoding="async"
-          >
-        </div>
+            <div class="families">
+              <div class="col-a">
+                M. Chokroun Eric<br>
+                Mme Sitbon Sandra<br>
+                M. Sitbon Marlene
+              </div>
+              <div class="col-b">
+                M. &amp; Mme Dayan Franck<br>
+                M. Dayan Sylvain<br>
+                Mme Walner Lilliane
+              </div>
+            </div>
 
-        <div class="slide" data-slide="1">
-          <img
-            class="slide-card"
-            src="mairie.png"
-            alt="Faire-part Mairie — Ilana &amp; Jonathan"
-            width="1240"
-            height="1748"
-            decoding="async"
-          >
-        </div>
+            <p class="announce">
+              ont la joie de vous faire part du mariage<br>
+              de leurs enfants et petits-enfants
+            </p>
 
-        <div class="slide" data-slide="2">
-          <div class="slide-placeholder">
-            <div style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 14px; letter-spacing: 3px; color: var(--accent-deep); text-transform: uppercase;">Houppa</div>
-            <div style="font-size: 14px; color: var(--soft); font-style: italic;">à venir</div>
-          </div>
-        </div>
+            <h2 class="couple">
+              Ilana
+              <span class="he" lang="he">אילנה</span>
+              <span class="amp">&amp;</span>
+              Jonathan
+              <span class="he" lang="he">יונתן</span>
+            </h2>
 
-        <!-- Slide 3 — RSVP -->
-        <div class="slide" data-slide="3">
-          <div class="rsvp-card" id="rsvpCard">
-            <p class="rsvp-eyebrow">Réponse</p>
+            <p class="lead">La cérémonie religieuse suivie de la réception aura lieu</p>
+            <p class="event-date">Jeudi 27 mai · 15h00</p>
+            <p class="venue">Au Domaine des Calanques</p>
+            <p class="addr">229 Rte Léon Lachamp<br>13009 Marseille</p>
+            <p class="memorial">
+              Une pensée particulière à Papi Gérard, Sauveur et Pierre,
+              Mamie Denise et Maryse et Tata Josiane
+            </p>
+          </section>
+
+          <div class="sep" aria-hidden="true"><span class="sep-dot"></span></div>
+
+          <!-- RSVP -->
+          <section class="block rsvp-block" id="rsvpCard" aria-labelledby="labelRsvp">
+            <p class="eyebrow" id="labelRsvp">Réponse</p>
             <p class="rsvp-lead">Merci de confirmer votre présence</p>
 
             <form class="rsvp-form" id="rsvpForm" novalidate>
-              <div class="rsvp-field">
+              <div class="field">
                 <label for="rsvpName">Nom &amp; prénom</label>
                 <input id="rsvpName" name="name" type="text" autocomplete="name" required>
               </div>
 
-              <div class="rsvp-field">
-                <label id="rsvpPresenceLabel">Présence</label>
-                <div class="rsvp-choice" role="group" aria-labelledby="rsvpPresenceLabel">
+              <div class="field">
+                <span class="field-label" id="rsvpPresenceLabel" style="display:block;margin-bottom:0.4rem;font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-deep);">Présence</span>
+                <div class="choice" role="group" aria-labelledby="rsvpPresenceLabel">
                   <input type="radio" id="rsvpYes" name="presence" value="oui" required>
                   <label for="rsvpYes">Oui</label>
                   <input type="radio" id="rsvpNo" name="presence" value="non">
@@ -559,89 +670,50 @@
                 </div>
               </div>
 
-              <div class="rsvp-field">
+              <div class="field">
                 <label for="rsvpGuests">Nombre de personnes</label>
                 <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
               </div>
 
-              <button type="submit" class="rsvp-submit" id="rsvpSubmit">Envoyer</button>
+              <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
               <p class="rsvp-error" id="rsvpError" role="alert">Impossible d’envoyer pour le moment. Réessaie un peu plus tard.</p>
             </form>
 
-            <div class="rsvp-thanks" role="status" aria-live="polite">
-              <p>Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.</p>
-            </div>
-          </div>
+            <p class="rsvp-thanks" role="status" aria-live="polite">
+              Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
+            </p>
+          </section>
+
         </div>
-
-      </div>
-
-      <button id="nextBtn" class="nav-btn" aria-label="Carte suivante">
-        <svg width="13" height="13" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4 L17 12 L9 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-
+      </article>
     </div>
-
-  </div>
-  </div>
-
-</div>
-
+  </main>
 
 <script>
 (function () {
-  var idx = 0;
-  var total = 4;
   var opening = false;
   var gate = document.getElementById('gate');
-  var carousel = document.getElementById('carousel');
+  var invite = document.getElementById('invite');
   var openBtn = document.getElementById('openBtn');
-  var prevBtn = document.getElementById('prevBtn');
-  var nextBtn = document.getElementById('nextBtn');
-  var slides = document.querySelectorAll('.slide');
   var rsvpForm = document.getElementById('rsvpForm');
   var rsvpCard = document.getElementById('rsvpCard');
   var rsvpSubmit = document.getElementById('rsvpSubmit');
   var rsvpError = document.getElementById('rsvpError');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /**
-   * Colle ici l'URL de ton Apps Script (Déployer → Application Web).
-   * Voir le fichier rsvp-google-apps-script.gs pour la procédure.
-   */
   var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVVhnRpjEKeAosWOzwWkkvgvrwpMlbkJ6H3BXjbr-AlzO-1nu6ir3Wvhmw5l6Z81XkfQ/exec';
-
-  function render() {
-    slides.forEach(function (el) {
-      var active = parseInt(el.getAttribute('data-slide'), 10) === idx;
-      el.classList.toggle('is-active', active);
-    });
-  }
 
   openBtn.addEventListener('click', function () {
     if (opening) return;
     opening = true;
-
     gate.classList.add('is-rising');
-    carousel.classList.add('is-visible');
+    invite.classList.add('is-visible');
 
-    var riseMs = reduceMotion ? 0 : 1100;
+    var riseMs = reduceMotion ? 0 : 1050;
     setTimeout(function () {
       gate.classList.add('is-done');
-      setTimeout(function () {
-        gate.style.display = 'none';
-      }, reduceMotion ? 0 : 700);
+      setTimeout(function () { gate.style.display = 'none'; }, reduceMotion ? 0 : 700);
     }, riseMs);
-  });
-
-  prevBtn.addEventListener('click', function () {
-    idx = (idx - 1 + total) % total;
-    render();
-  });
-
-  nextBtn.addEventListener('click', function () {
-    idx = (idx + 1) % total;
-    render();
   });
 
   if (rsvpForm && rsvpCard) {
@@ -651,14 +723,6 @@
 
       if (!rsvpForm.checkValidity()) {
         rsvpForm.reportValidity();
-        return;
-      }
-
-      if (!RSVP_SCRIPT_URL) {
-        rsvpCard.classList.add('has-error');
-        if (rsvpError) {
-          rsvpError.textContent = 'Configure d’abord l’URL Google Sheets (RSVP_SCRIPT_URL).';
-        }
         return;
       }
 
@@ -674,22 +738,15 @@
         rsvpSubmit.textContent = 'Envoi…';
       }
 
-      // text/plain évite le preflight CORS avec Apps Script
       fetch(RSVP_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       })
-        .then(function () {
-          // no-cors : pas de lecture de réponse, mais l'envoi part bien
-          rsvpCard.classList.add('is-sent');
-        })
+        .then(function () { rsvpCard.classList.add('is-sent'); })
         .catch(function () {
           rsvpCard.classList.add('has-error');
-          if (rsvpError) {
-            rsvpError.textContent = 'Impossible d’envoyer pour le moment. Réessaie un peu plus tard.';
-          }
           if (rsvpSubmit) {
             rsvpSubmit.disabled = false;
             rsvpSubmit.textContent = 'Envoyer';
@@ -697,8 +754,6 @@
         });
     });
   }
-
-  render();
 })();
 </script>
 </body>
