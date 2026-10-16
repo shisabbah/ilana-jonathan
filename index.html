@@ -128,15 +128,16 @@ button { font: inherit; }
     max(2rem, env(safe-area-inset-bottom))
     var(--safe-x);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
 }
 
-/* Colonne : cadre floral + contenu dans la zone crème */
+/* Cadre floral : Mairie + Houppa seulement (s’arrête aux pensées) */
 .invite {
   width: var(--invite-w);
   position: relative;
   background-color: var(--paper);
-  /* longfond en haut + bas, crème au milieu (pas d’étirement) */
   background-image:
     url('longfond.png'),
     url('longfond.png');
@@ -149,19 +150,32 @@ button { font: inherit; }
 .invite-inner {
   position: relative;
   z-index: 1;
-  /*
-    Marge haute généreuse : le drapé + fleurs du longfond
-    occupent ~18–22 % du haut de l’image — on décale le texte en dessous.
-  */
   padding:
     clamp(7.5rem, 38vw, 11rem)
     clamp(1.85rem, 11vw, 3rem)
-    clamp(5.5rem, 26vw, 8rem);
+    clamp(6.5rem, 30vw, 9.5rem);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
   gap: 0;
+}
+
+/* RSVP : même thème, fond papier (pas longfond) */
+.rsvp-panel {
+  width: var(--invite-w);
+  background-color: var(--paper);
+  background-image: url('fondpapier.png');
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 1.25rem 2.75rem -1.5rem rgba(59, 46, 66, 0.12);
+  padding:
+    clamp(2rem, 6vw, 2.75rem)
+    clamp(1.85rem, 11vw, 3rem)
+    clamp(2.25rem, 7vw, 3rem);
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 
 /* Séparateur entre blocs */
@@ -536,14 +550,16 @@ button { font: inherit; }
   .invite-page {
     padding-top: 2.5rem;
     padding-bottom: 2.5rem;
+    gap: 1.5rem;
   }
   :root { --invite-w: 30rem; }
-  .invite {
+  .invite,
+  .rsvp-panel {
     border-radius: 2px;
   }
   .invite-inner {
     padding-top: 12.5rem;
-    padding-bottom: 9rem;
+    padding-bottom: 10.5rem;
   }
   .families {
     font-size: 0.86rem;
@@ -583,10 +599,11 @@ button { font: inherit; }
 
   <main id="invite">
     <div class="invite-page">
+
+      <!-- Faire-part : fond longfond jusqu’aux pensées -->
       <article class="invite">
         <div class="invite-inner">
 
-          <!-- Mairie -->
           <section class="block" aria-labelledby="labelMairie">
             <p class="eyebrow" id="labelMairie">La Mairie</p>
             <h1 class="names">
@@ -603,7 +620,6 @@ button { font: inherit; }
 
           <div class="sep" aria-hidden="true"><span class="sep-dot"></span></div>
 
-          <!-- Houppa -->
           <section class="block" aria-labelledby="labelHouppa">
             <p class="eyebrow" id="labelHouppa">La Houppa</p>
             <p class="hebrew" lang="he">
@@ -647,45 +663,46 @@ button { font: inherit; }
             </p>
           </section>
 
-          <div class="sep" aria-hidden="true"><span class="sep-dot"></span></div>
-
-          <!-- RSVP -->
-          <section class="block rsvp-block" id="rsvpCard" aria-labelledby="labelRsvp">
-            <p class="eyebrow" id="labelRsvp">Réponse</p>
-            <p class="rsvp-lead">Merci de confirmer votre présence</p>
-
-            <form class="rsvp-form" id="rsvpForm" novalidate>
-              <div class="field">
-                <label for="rsvpName">Nom &amp; prénom</label>
-                <input id="rsvpName" name="name" type="text" autocomplete="name" required>
-              </div>
-
-              <div class="field">
-                <span class="field-label" id="rsvpPresenceLabel" style="display:block;margin-bottom:0.4rem;font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-deep);">Présence</span>
-                <div class="choice" role="group" aria-labelledby="rsvpPresenceLabel">
-                  <input type="radio" id="rsvpYes" name="presence" value="oui" required>
-                  <label for="rsvpYes">Oui</label>
-                  <input type="radio" id="rsvpNo" name="presence" value="non">
-                  <label for="rsvpNo">Non</label>
-                </div>
-              </div>
-
-              <div class="field">
-                <label for="rsvpGuests">Nombre de personnes</label>
-                <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
-              </div>
-
-              <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
-              <p class="rsvp-error" id="rsvpError" role="alert">Impossible d’envoyer pour le moment. Réessaie un peu plus tard.</p>
-            </form>
-
-            <p class="rsvp-thanks" role="status" aria-live="polite">
-              Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
-            </p>
-          </section>
-
         </div>
       </article>
+
+      <!-- RSVP : même thème, fond papier -->
+      <section class="rsvp-panel rsvp-block" id="rsvpCard" aria-labelledby="labelRsvp">
+        <div class="block">
+          <p class="eyebrow" id="labelRsvp">Réponse</p>
+          <p class="rsvp-lead">Merci de confirmer votre présence</p>
+
+          <form class="rsvp-form" id="rsvpForm" novalidate>
+            <div class="field">
+              <label for="rsvpName">Nom &amp; prénom</label>
+              <input id="rsvpName" name="name" type="text" autocomplete="name" required>
+            </div>
+
+            <div class="field">
+              <span class="field-label" id="rsvpPresenceLabel" style="display:block;margin-bottom:0.4rem;font-family:'Cormorant Garamond',serif;font-weight:500;font-style:italic;font-size:0.75rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--accent-deep);">Présence</span>
+              <div class="choice" role="group" aria-labelledby="rsvpPresenceLabel">
+                <input type="radio" id="rsvpYes" name="presence" value="oui" required>
+                <label for="rsvpYes">Oui</label>
+                <input type="radio" id="rsvpNo" name="presence" value="non">
+                <label for="rsvpNo">Non</label>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="rsvpGuests">Nombre de personnes</label>
+              <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
+            </div>
+
+            <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
+            <p class="rsvp-error" id="rsvpError" role="alert">Impossible d’envoyer pour le moment. Réessaie un peu plus tard.</p>
+          </form>
+
+          <p class="rsvp-thanks" role="status" aria-live="polite">
+            Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
+          </p>
+        </div>
+      </section>
+
     </div>
   </main>
 
