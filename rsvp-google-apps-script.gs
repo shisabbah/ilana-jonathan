@@ -2,13 +2,16 @@
  * RSVP → Google Sheets
  * --------------------
  * 1. Crée une Google Sheet (ex. "RSVP Ilana Jonathan")
- * 2. Ligne 1 (en-têtes) : Timestamp | Nom | Presence | Invites | Message
+ * 2. Ligne 1 (en-têtes) : Timestamp | Nom | Mairie | Houppa | Invites | Message
  * 3. Extensions → Apps Script → colle TOUT ce fichier
  * 4. Déployer → Nouveau déploiement → Type : Application Web
  *    - Exécuter en tant que : Moi
  *    - Qui a accès : Tout le monde
  * 5. Copie l'URL du déploiement
  * 6. Colle-la dans index.html : RSVP_SCRIPT_URL = 'https://script.google.com/...'
+ *
+ * Si la feuille existait déjà avec l’ancienne colonne Presence,
+ * ajoute manuellement les colonnes Mairie et Houppa, ou recrée l’onglet.
  */
 
 var SHEET_NAME = 'RSVP'; // nom de l'onglet (crée-le ou adapte)
@@ -26,15 +29,16 @@ function doPost(e) {
     var sheet = ss.getSheetByName(SHEET_NAME);
     if (!sheet) {
       sheet = ss.insertSheet(SHEET_NAME);
-      sheet.appendRow(['Timestamp', 'Nom', 'Presence', 'Invites', 'Message']);
+      sheet.appendRow(['Timestamp', 'Nom', 'Mairie', 'Houppa', 'Invites', 'Message']);
     }
 
     sheet.appendRow([
       new Date(),
       data.name || '',
-      data.presence || '',
+      data.mairie || '',
+      data.houppa || '',
       data.guests || '',
-      data.message || ''
+      data.message || data.presence || ''
     ]);
 
     return ContentService
@@ -47,7 +51,7 @@ function doPost(e) {
   }
 }
 
-/** Test rapide : Exécuter doGet dans l'éditeur pour vérifier que le script charge */
+/** Test rapide : Exécuter doGet dans l’éditeur pour vérifier que le script charge */
 function doGet() {
   return ContentService
     .createTextOutput(JSON.stringify({ ok: true, service: 'rsvp' }))

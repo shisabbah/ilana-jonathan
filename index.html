@@ -348,6 +348,27 @@ button { font: inherit; }
   border-bottom-color: var(--accent-deep);
 }
 
+.event-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+.event-name {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 0.92rem;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+}
+.event-meta {
+  margin: 0 0 0.15rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--soft);
+}
+
 .choice {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -567,7 +588,7 @@ button { font: inherit; }
         <hr class="page-rule" aria-hidden="true">
       </header>
       <div class="rsvp-panel rsvp-block" id="rsvpCard">
-        <p class="rsvp-lead">Merci de confirmer votre présence</p>
+        <p class="rsvp-lead">Merci de confirmer pour chaque cérémonie</p>
 
         <form class="rsvp-form" id="rsvpForm" novalidate>
           <div class="field">
@@ -575,13 +596,25 @@ button { font: inherit; }
             <input id="rsvpName" name="name" type="text" autocomplete="name" required>
           </div>
 
-          <div class="field">
-            <span class="field-label" id="rsvpPresenceLabel">Présence</span>
-            <div class="choice" role="group" aria-labelledby="rsvpPresenceLabel">
-              <input type="radio" id="rsvpYes" name="presence" value="oui" required>
-              <label for="rsvpYes">Oui</label>
-              <input type="radio" id="rsvpNo" name="presence" value="non">
-              <label for="rsvpNo">Non</label>
+          <div class="field event-block">
+            <p class="event-name" id="labelMairieRsvp">La Mairie</p>
+            <p class="event-meta">Mardi 25 mai · 14h30</p>
+            <div class="choice" role="group" aria-labelledby="labelMairieRsvp">
+              <input type="radio" id="mairieYes" name="mairie" value="oui" required>
+              <label for="mairieYes">Oui</label>
+              <input type="radio" id="mairieNo" name="mairie" value="non">
+              <label for="mairieNo">Non</label>
+            </div>
+          </div>
+
+          <div class="field event-block">
+            <p class="event-name" id="labelHouppaRsvp">La Houppa</p>
+            <p class="event-meta">Jeudi 27 mai · 15h00</p>
+            <div class="choice" role="group" aria-labelledby="labelHouppaRsvp">
+              <input type="radio" id="houppaYes" name="houppa" value="oui" required>
+              <label for="houppaYes">Oui</label>
+              <input type="radio" id="houppaNo" name="houppa" value="non">
+              <label for="houppaNo">Non</label>
             </div>
           </div>
 
@@ -690,10 +723,16 @@ button { font: inherit; }
         return;
       }
 
-      var presenceEl = rsvpForm.querySelector('input[name="presence"]:checked');
+      var mairieEl = rsvpForm.querySelector('input[name="mairie"]:checked');
+      var houppaEl = rsvpForm.querySelector('input[name="houppa"]:checked');
       var payload = {
         name: (document.getElementById('rsvpName').value || '').trim(),
-        presence: presenceEl ? presenceEl.value : '',
+        mairie: mairieEl ? mairieEl.value : '',
+        houppa: houppaEl ? houppaEl.value : '',
+        presence: [
+          'Mairie: ' + (mairieEl ? mairieEl.value : ''),
+          'Houppa: ' + (houppaEl ? houppaEl.value : '')
+        ].join(' · '),
         guests: document.getElementById('rsvpGuests').value || '1'
       };
 
