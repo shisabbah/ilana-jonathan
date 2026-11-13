@@ -605,6 +605,8 @@ button { font: inherit; }
               <input type="radio" id="mairieNo" name="mairie" value="non">
               <label for="mairieNo">Non</label>
             </div>
+            <label for="mairieGuests">Nombre de personnes</label>
+            <input id="mairieGuests" name="mairieGuests" type="number" min="0" max="20" value="1" inputmode="numeric">
           </div>
 
           <div class="field event-block">
@@ -616,11 +618,8 @@ button { font: inherit; }
               <input type="radio" id="houppaNo" name="houppa" value="non">
               <label for="houppaNo">Non</label>
             </div>
-          </div>
-
-          <div class="field">
-            <label for="rsvpGuests">Nombre de personnes</label>
-            <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
+            <label for="houppaGuests">Nombre de personnes</label>
+            <input id="houppaGuests" name="houppaGuests" type="number" min="0" max="20" value="1" inputmode="numeric">
           </div>
 
           <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
@@ -725,15 +724,19 @@ button { font: inherit; }
 
       var mairieEl = rsvpForm.querySelector('input[name="mairie"]:checked');
       var houppaEl = rsvpForm.querySelector('input[name="houppa"]:checked');
+      var mairieGuests = document.getElementById('mairieGuests').value || '0';
+      var houppaGuests = document.getElementById('houppaGuests').value || '0';
       var payload = {
         name: (document.getElementById('rsvpName').value || '').trim(),
         mairie: mairieEl ? mairieEl.value : '',
         houppa: houppaEl ? houppaEl.value : '',
+        mairieGuests: mairieGuests,
+        houppaGuests: houppaGuests,
         presence: [
-          'Mairie: ' + (mairieEl ? mairieEl.value : ''),
-          'Houppa: ' + (houppaEl ? houppaEl.value : '')
+          'Mairie: ' + (mairieEl ? mairieEl.value : '') + ' (' + mairieGuests + ')',
+          'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
         ].join(' · '),
-        guests: document.getElementById('rsvpGuests').value || '1'
+        guests: mairieGuests + ' / ' + houppaGuests
       };
 
       if (rsvpSubmit) {
