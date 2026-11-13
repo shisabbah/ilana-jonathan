@@ -161,6 +161,41 @@ button { font: inherit; }
   box-shadow: 0 1.25rem 2.75rem -1.25rem rgba(59, 46, 66, 0.18);
 }
 
+/* —— Musique —— */
+.music-btn {
+  position: fixed;
+  z-index: 40;
+  right: max(1rem, env(safe-area-inset-right));
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  background: rgba(251, 248, 244, 0.92);
+  color: var(--accent-deep);
+  cursor: pointer;
+  display: none;
+  place-items: center;
+  box-shadow: 0 0.4rem 1rem -0.35rem rgba(59, 46, 66, 0.2);
+  transition: opacity 0.35s ease, transform 0.2s ease;
+}
+.music-btn.is-on {
+  display: grid;
+}
+.music-btn:active { transform: scale(0.96); }
+.music-btn:focus-visible {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 3px;
+}
+.music-btn svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  fill: currentColor;
+}
+.music-btn .icon-off { display: none; }
+.music-btn.is-muted .icon-on { display: none; }
+.music-btn.is-muted .icon-off { display: block; }
+
 @media (prefers-reduced-motion: reduce) {
   .accueil, .accueil-logo, #pages { transition: none !important; }
   .accueil-hint { animation: none; }
@@ -184,13 +219,47 @@ button { font: inherit; }
     <section class="page" aria-label="La Mairie">
       <img src="mairie1.png" alt="Invitation — La Mairie : Ilana et Jonathan se diront oui le 25 mai 2027 à 14h30, Mairie Bagatelle, Marseille" width="1056" height="1489" decoding="async">
     </section>
+    <section class="page" aria-label="La Houppa">
+      <img src="houppa3.png" alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 15h00 au Domaine des Calanques" width="941" height="1672" decoding="async" loading="lazy">
+    </section>
   </main>
+
+  <audio id="bgMusic" src="musique.mp3" loop preload="auto" playsinline></audio>
+
+  <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
+    <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3l4 3V7L6 10H3zm11.5 2a2.5 2.5 0 0 0-1.5-2.3v4.6a2.5 2.5 0 0 0 1.5-2.3zm-1.5-6.2v1.6a4.5 4.5 0 0 1 0 9.2v1.6a6.1 6.1 0 0 0 0-12.4z"/></svg>
+    <svg class="icon-off" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 12a2.5 2.5 0 0 0-1.5-2.3v2.5l1.5 1.5V12zm2.5 0c0 .9-.2 1.7-.6 2.4l1.2 1.2A5.9 5.9 0 0 0 20.5 12a6.1 6.1 0 0 0-3.5-5.5v1.6A4.5 4.5 0 0 1 19 12zM4.3 3 3 4.3 7.7 9H3v4h3l4 3v-5.7l5.7 5.7 1.3-1.3L4.3 3zM14 3.2v1.6l-2 2V3.2L14 3.2z"/></svg>
+  </button>
 
 <script>
 (function () {
   var accueil = document.getElementById('accueil');
   var pages = document.getElementById('pages');
+  var music = document.getElementById('bgMusic');
+  var musicBtn = document.getElementById('musicBtn');
   var opened = false;
+
+  music.volume = 0.55;
+
+  function setMuted(muted) {
+    music.muted = muted;
+    musicBtn.classList.toggle('is-muted', muted);
+    musicBtn.setAttribute('aria-pressed', muted ? 'true' : 'false');
+    musicBtn.setAttribute('aria-label', muted ? 'Remettre la musique' : 'Couper la musique');
+  }
+
+  function startMusic() {
+    music.play().then(function () {
+      musicBtn.hidden = false;
+      musicBtn.classList.add('is-on');
+      setMuted(false);
+    }).catch(function () {
+      /* Lecture bloquée : bouton visible pour lancer manuellement */
+      musicBtn.hidden = false;
+      musicBtn.classList.add('is-on', 'is-muted');
+      setMuted(true);
+    });
+  }
 
   function openInvite() {
     if (opened) return;
@@ -203,7 +272,17 @@ button { font: inherit; }
     window.setTimeout(function () {
       accueil.classList.add('is-done');
     }, 1100);
+    startMusic();
   }
+
+  musicBtn.addEventListener('click', function () {
+    if (music.paused) {
+      music.muted = false;
+      music.play().then(function () { setMuted(false); }).catch(function () {});
+      return;
+    }
+    setMuted(!music.muted);
+  });
 
   accueil.addEventListener('click', openInvite);
   accueil.addEventListener('keydown', function (e) {
