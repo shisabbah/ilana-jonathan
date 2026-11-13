@@ -32,6 +32,7 @@
   --accent: #B7A0CC;
   --accent-deep: #7C5E96;
   --accent-soft: #D4C6E0;
+  --accent-light: #E8DFEF;
   --bg: #F4F0EA;
   --paper: #FBF8F4;
   --ink: #3B2E42;
@@ -280,6 +281,167 @@ button { font: inherit; }
   }
 }
 
+/* ========== RSVP ========== */
+.page--rsvp {
+  justify-content: center;
+}
+
+.rsvp-panel {
+  width: min(100%, 26rem);
+  background-color: var(--paper);
+  background-image: url('fondpapier.png');
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--shadow);
+  padding: 1.85rem 1.4rem 2.1rem;
+  text-align: center;
+}
+
+.rsvp-lead {
+  margin: 0.35rem 0 1.25rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1rem;
+  color: var(--soft);
+}
+
+.rsvp-form {
+  width: 100%;
+  max-width: 17rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  text-align: left;
+}
+
+.field label,
+.field-label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+}
+
+.field input[type="text"],
+.field input[type="number"] {
+  width: 100%;
+  padding: 0.55rem 0.1rem;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--ink);
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--accent);
+  border-radius: 0;
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.field input:focus {
+  border-bottom-color: var(--accent-deep);
+}
+
+.choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.45rem;
+}
+.choice input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+.choice label {
+  margin: 0;
+  padding: 0.75rem 0.4rem;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  color: var(--soft);
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--paper) 70%, transparent);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease, background-color 0.25s ease;
+}
+.choice input:checked + label {
+  border-color: var(--accent-deep);
+  color: var(--accent-deep);
+  background: var(--accent-light);
+}
+.choice input:focus-visible + label {
+  outline: 2px solid var(--accent-deep);
+  outline-offset: 2px;
+}
+
+.submit {
+  appearance: none;
+  align-self: center;
+  margin-top: 0.2rem;
+  padding: 0.8rem 1.55rem;
+  min-height: 2.85rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-style: italic;
+  font-size: 0.8rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  background: transparent;
+  border: 1px solid var(--accent);
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+.submit:hover,
+.submit:focus-visible {
+  background: var(--accent-light);
+  border-color: var(--accent-deep);
+  outline: none;
+}
+.submit:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+.rsvp-error {
+  display: none;
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  color: #8B4A5A;
+}
+.rsvp-block.has-error .rsvp-error { display: block; }
+
+.rsvp-thanks {
+  display: none;
+  margin: 0.5rem auto 0;
+  max-width: 16rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.rsvp-block.is-sent .rsvp-form { display: none; }
+.rsvp-block.is-sent .rsvp-thanks { display: block; }
+
 /* ========== MUSIQUE ========== */
 .music-btn {
   position: fixed;
@@ -396,7 +558,46 @@ button { font: inherit; }
           decoding="async"
           loading="lazy">
       </figure>
-      <p class="page-nav"><a href="#mairie">Revenir à la Mairie</a></p>
+      <p class="page-nav"><a href="#rsvp">Confirmer votre présence</a></p>
+    </section>
+
+    <section class="page page--rsvp" id="rsvp" aria-labelledby="labelRsvp">
+      <header class="page-head">
+        <h2 class="page-title" id="labelRsvp">Réponse</h2>
+        <hr class="page-rule" aria-hidden="true">
+      </header>
+      <div class="rsvp-panel rsvp-block" id="rsvpCard">
+        <p class="rsvp-lead">Merci de confirmer votre présence</p>
+
+        <form class="rsvp-form" id="rsvpForm" novalidate>
+          <div class="field">
+            <label for="rsvpName">Nom &amp; prénom</label>
+            <input id="rsvpName" name="name" type="text" autocomplete="name" required>
+          </div>
+
+          <div class="field">
+            <span class="field-label" id="rsvpPresenceLabel">Présence</span>
+            <div class="choice" role="group" aria-labelledby="rsvpPresenceLabel">
+              <input type="radio" id="rsvpYes" name="presence" value="oui" required>
+              <label for="rsvpYes">Oui</label>
+              <input type="radio" id="rsvpNo" name="presence" value="non">
+              <label for="rsvpNo">Non</label>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="rsvpGuests">Nombre de personnes</label>
+            <input id="rsvpGuests" name="guests" type="number" min="1" max="20" value="1" inputmode="numeric">
+          </div>
+
+          <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
+          <p class="rsvp-error" id="rsvpError" role="alert">Impossible d’envoyer pour le moment. Réessaie un peu plus tard.</p>
+        </form>
+
+        <p class="rsvp-thanks" role="status" aria-live="polite">
+          Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
+        </p>
+      </div>
     </section>
   </main>
 
@@ -413,8 +614,13 @@ button { font: inherit; }
   var pages = document.getElementById('pages');
   var music = document.getElementById('bgMusic');
   var musicBtn = document.getElementById('musicBtn');
+  var rsvpForm = document.getElementById('rsvpForm');
+  var rsvpCard = document.getElementById('rsvpCard');
+  var rsvpSubmit = document.getElementById('rsvpSubmit');
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVVhnRpjEKeAosWOzwWkkvgvrwpMlbkJ6H3BXjbr-AlzO-1nu6ir3Wvhmw5l6Z81XkfQ/exec';
 
   music.volume = 0.48;
 
@@ -473,6 +679,45 @@ button { font: inherit; }
       openInvite();
     }
   });
+
+  if (rsvpForm && rsvpCard) {
+    rsvpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      rsvpCard.classList.remove('has-error');
+
+      if (!rsvpForm.checkValidity()) {
+        rsvpForm.reportValidity();
+        return;
+      }
+
+      var presenceEl = rsvpForm.querySelector('input[name="presence"]:checked');
+      var payload = {
+        name: (document.getElementById('rsvpName').value || '').trim(),
+        presence: presenceEl ? presenceEl.value : '',
+        guests: document.getElementById('rsvpGuests').value || '1'
+      };
+
+      if (rsvpSubmit) {
+        rsvpSubmit.disabled = true;
+        rsvpSubmit.textContent = 'Envoi…';
+      }
+
+      fetch(RSVP_SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload)
+      })
+        .then(function () { rsvpCard.classList.add('is-sent'); })
+        .catch(function () {
+          rsvpCard.classList.add('has-error');
+          if (rsvpSubmit) {
+            rsvpSubmit.disabled = false;
+            rsvpSubmit.textContent = 'Envoyer';
+          }
+        });
+    });
+  }
 })();
 </script>
 </body>
