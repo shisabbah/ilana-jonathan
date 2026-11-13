@@ -788,29 +788,37 @@ button { font: inherit; }
       var houppaEl = rsvpForm.querySelector('input[name="houppa"]:checked');
       var mairieGuests = document.getElementById('mairieGuests').value || '0';
       var houppaGuests = document.getElementById('houppaGuests').value || '0';
-      var payload = {
-        name: (document.getElementById('rsvpName').value || '').trim(),
+      var name = (document.getElementById('rsvpName').value || '').trim();
+      var presence = [
+        'Mairie: ' + (mairieEl ? mairieEl.value : '') + ' (' + mairieGuests + ')',
+        'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
+      ].join(' · ');
+
+      /* URLSearchParams → reçu dans e.parameter (fiable avec Apps Script) */
+      var body = new URLSearchParams({
+        name: name,
         mairie: mairieEl ? mairieEl.value : '',
         houppa: houppaEl ? houppaEl.value : '',
-        mairieGuests: mairieGuests,
-        houppaGuests: houppaGuests,
-        presence: [
-          'Mairie: ' + (mairieEl ? mairieEl.value : '') + ' (' + mairieGuests + ')',
-          'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
-        ].join(' · '),
+        mairieGuests: String(mairieGuests),
+        houppaGuests: String(houppaGuests),
+        presence: presence,
         guests: mairieGuests + ' / ' + houppaGuests
-      };
+      });
 
       if (rsvpSubmit) {
         rsvpSubmit.disabled = true;
         rsvpSubmit.textContent = 'Envoi…';
       }
 
+      /* Réactive les champs disabled le temps de l’envoi (sinon exclus) */
+      document.getElementById('mairieGuests').disabled = false;
+      document.getElementById('houppaGuests').disabled = false;
+
       fetch(RSVP_SCRIPT_URL, {
         method: 'POST',
         mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload)
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body.toString()
       })
         .then(function () { rsvpCard.classList.add('is-sent'); })
         .catch(function () {

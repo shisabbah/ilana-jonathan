@@ -1,60 +1,54 @@
 /**
- * RSVP → Google Sheets (version Mairie / Houppa)
- * ================================================
- * IMPORTANT : ouvre ce script DEPUIS la Google Sheet
- * (Extensions → Apps Script), pas un projet Apps Script isolé.
+ * RSVP → Google Sheets (Mairie / Houppa)
+ * =======================================
+ * 1. Colle TOUT ce fichier dans Apps Script
+ * 2. Renseigne SPREADSHEET_ID (URL Sheet : /d/ID/edit)
+ * 3. Onglet nommé RSVP
+ * 4. Enregistre → Déployer → Nouvelle version (même URL /exec)
  *
- * 1. Dans la Sheet, crée un onglet nommé exactement : RSVP
- * 2. Ligne 1 (en-têtes) :
- *    Timestamp | Nom | Mairie | Nb Mairie | Houppa | Nb Houppa | Détail
- * 3. Colle TOUT ce fichier (remplace l’ancien code)
- * 4. Enregistre (Ctrl/Cmd+S)
- * 5. Déployer → Gérer les déploiements → Modifier (crayon)
- *    OU Nouveau déploiement → Application Web
- *      - Exécuter en tant que : Moi
- *      - Qui a accès : Tout le monde
- * 6. Déploie, copie l’URL …/exec
- * 7. Colle l’URL dans index.html (RSVP_SCRIPT_URL)
- *
- * Après chaque modification du script : redéploie une NOUVELLE version.
+ * Le site envoie du form-urlencoded → champs dans e.parameter
  */
 
 var SHEET_NAME = 'RSVP';
 
-/**
- * Si getActiveSpreadsheet() échoue (script non lié à la Sheet),
- * colle ici l’ID du tableur (dans l’URL : /d/CET_ID/edit).
- */
+/** ID du tableur (obligatoire si le script n’est pas lié à la Sheet) */
 var SPREADSHEET_ID = '';
 
 function parseBody_(e) {
-  var data = {};
+  // 1) Champs formulaire (URLSearchParams / form) — priorité
+  if (e && e.parameter && (e.parameter.name || e.parameter.mairie || e.parameter.presence)) {
+    return e.parameter;
+  }
+
+  // 2) JSON brut (ancien mode)
   if (e && e.postData && e.postData.contents) {
     var raw = String(e.postData.contents).trim();
     try {
-      data = JSON.parse(raw);
+      return JSON.parse(raw);
     } catch (err) {
-      // fallback form-urlencoded éventuel
-      if (e.parameter) data = e.parameter;
+      // 3) form-urlencoded dans le body
+      var out = {};
+      raw.split('&').forEach(function (pair) {
+        var parts = pair.split('=');
+        if (parts.length >= 2) {
+          out[decodeURIComponent(parts[0].replace(/\+/g, ' '))] =
+            decodeURIComponent(parts.slice(1).join('=').replace(/\+/g, ' '));
+        }
+      });
+      return out;
     }
-  } else if (e && e.parameter) {
-    data = e.parameter;
   }
-  return data || {};
+
+  return (e && e.parameter) || {};
 }
 
 function getSheet_() {
-  var ss = null;
-  if (SPREADSHEET_ID) {
-    ss = SpreadsheetApp.openById(SPREADSHEET_ID);
-  } else {
-    ss = SpreadsheetApp.getActiveSpreadsheet();
-  }
+  var ss = SPREADSHEET_ID
+    ? SpreadsheetApp.openById(SPREADSHEET_ID)
+    : SpreadsheetApp.getActiveSpreadsheet();
+
   if (!ss) {
-    throw new Error(
-      'Aucune feuille liée. Ouvre Apps Script depuis la Sheet, ' +
-      'ou renseigne SPREADSHEET_ID en haut du fichier.'
-    );
+    throw new Error('Renseigne SPREADSHEET_ID en haut du script.');
   }
 
   var sheet = ss.getSheetByName(SHEET_NAME);
@@ -62,7 +56,6 @@ function getSheet_() {
     sheet = ss.insertSheet(SHEET_NAME);
   }
 
-  // En-têtes si onglet vide
   if (sheet.getLastRow() === 0) {
     sheet.appendRow([
       'Timestamp',
@@ -83,28 +76,14 @@ function doPost(e) {
     var data = parseBody_(e);
     var sheet = getSheet_();
 
-    var name = data.name || '';
-    var mairie = data.mairie || '';
-    var houppa = data.houppa || '';
-    var mairieGuests = data.mairieGuests != null ? data.mairieGuests : '';
-    var houppaGuests = data.houppaGuests != null ? data.houppaGuests : '';
-    var detail = data.message || data.presence || '';
-
-    // Compat ancien formulaire (une seule présence)
-    if (!mairie && !houppa && data.presence) {
-      detail = data.presence;
-      mairie = data.presence;
-      mairieGuests = data.guests || '';
-    }
-
     sheet.appendRow([
       new Date(),
-      name,
-      mairie,
-      mairieGuests,
-      houppa,
-      houppaGuests,
-      detail
+      data.name || '',
+      data.mairie || '',
+      data.mairieGuests != null ? data.mairieGuests : '',
+      data.houppa || '',
+      data.houppaGuests != null ? data.houppaGuests : '',
+      data.message || data.presence || ''
     ]);
 
     return ContentService
@@ -117,10 +96,27 @@ function doPost(e) {
   }
 }
 
-/** Test : Exécuter doGet → doit afficher {"ok":true,"service":"rsvp"} */
-function doGet() {
+function doGet(e) {
+  // Test navigateur : ouvrir l’URL /exec → doit afficher ok
+  // Si ?name=test est passé, écrit une ligne de test
   try {
-    getSheet_(); // vérifie l’accès Sheet
+    if (e && e.parameter && e.parameter.name) {
+      var sheet = getSheet_();
+      sheet.appendRow([
+        new Date(),
+        e.parameter.name,
+        e.parameter.mairie || 'test',
+        e.parameter.mairieGuests || '1',
+        e.parameter.houppa || 'test',
+        e.parameter.houppaGuests || '1',
+        'test-get'
+      ]);
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: true, wrote: true }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    getSheet_();
     return ContentService
       .createTextOutput(JSON.stringify({ ok: true, service: 'rsvp', sheet: SHEET_NAME }))
       .setMimeType(ContentService.MimeType.JSON);
