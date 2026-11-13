@@ -143,13 +143,26 @@ button { font: inherit; }
 .page {
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 1rem;
   padding: max(1rem, env(safe-area-inset-top)) 0.75rem max(1.25rem, env(safe-area-inset-bottom));
   background-color: var(--bg);
   background-image: url('fondpapier.png');
   background-size: cover;
   background-position: center;
+}
+
+.page-title {
+  margin: 0;
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: clamp(0.8rem, 3vw, 0.95rem);
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--accent-deep);
+  text-align: center;
 }
 
 .page img {
@@ -216,10 +229,12 @@ button { font: inherit; }
   </button>
 
   <main id="pages">
-    <section class="page" aria-label="La Mairie">
+    <section class="page" aria-labelledby="titleMairie">
+      <h2 class="page-title" id="titleMairie">La Mairie</h2>
       <img src="mairie1.png" alt="Invitation — La Mairie : Ilana et Jonathan se diront oui le 25 mai 2027 à 14h30, Mairie Bagatelle, Marseille" width="1056" height="1489" decoding="async">
     </section>
-    <section class="page" aria-label="La Houppa">
+    <section class="page" aria-labelledby="titleHouppa">
+      <h2 class="page-title" id="titleHouppa">La Houppa</h2>
       <img src="houppa3.png" alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 15h00 au Domaine des Calanques" width="941" height="1672" decoding="async" loading="lazy">
     </section>
   </main>
