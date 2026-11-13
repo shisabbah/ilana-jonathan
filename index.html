@@ -657,6 +657,7 @@ button { font: inherit; }
     </section>
   </main>
 
+  <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP" hidden></iframe>
   <audio id="bgMusic" src="musique.mp3" preload="metadata" playsinline></audio>
 
   <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
@@ -716,6 +717,7 @@ button { font: inherit; }
     if (opened) return;
     opened = true;
 
+    accueil.blur();
     pages.style.display = 'block';
     // Force reflow so the enter transition runs
     void pages.offsetWidth;
@@ -725,8 +727,9 @@ button { font: inherit; }
 
     window.setTimeout(function () {
       accueil.classList.add('is-done');
-      accueil.setAttribute('aria-hidden', 'true');
       accueil.tabIndex = -1;
+      accueil.setAttribute('disabled', 'true');
+      if ('inert' in accueil) accueil.inert = true;
     }, reduceMotion ? 0 : 950);
 
     startMusic();
@@ -794,8 +797,7 @@ button { font: inherit; }
         'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
       ].join(' · ');
 
-      /* URLSearchParams → reçu dans e.parameter (fiable avec Apps Script) */
-      var body = new URLSearchParams({
+      var payload = {
         name: name,
         mairie: mairieEl ? mairieEl.value : '',
         houppa: houppaEl ? houppaEl.value : '',
@@ -803,31 +805,32 @@ button { font: inherit; }
         houppaGuests: String(houppaGuests),
         presence: presence,
         guests: mairieGuests + ' / ' + houppaGuests
-      });
+      };
 
       if (rsvpSubmit) {
         rsvpSubmit.disabled = true;
         rsvpSubmit.textContent = 'Envoi…';
       }
 
-      /* Réactive les champs disabled le temps de l’envoi (sinon exclus) */
-      document.getElementById('mairieGuests').disabled = false;
-      document.getElementById('houppaGuests').disabled = false;
-
-      fetch(RSVP_SCRIPT_URL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body.toString()
-      })
-        .then(function () { rsvpCard.classList.add('is-sent'); })
-        .catch(function () {
-          rsvpCard.classList.add('has-error');
-          if (rsvpSubmit) {
-            rsvpSubmit.disabled = false;
-            rsvpSubmit.textContent = 'Envoyer';
-          }
-        });
+      /* POST via formulaire + iframe : contourne le 401 du fetch vers Apps Script */
+      var bridge = document.createElement('form');
+      bridge.method = 'POST';
+      bridge.action = RSVP_SCRIPT_URL;
+      bridge.target = 'rsvpFrame';
+      bridge.style.display = 'none';
+      Object.keys(payload).forEach(function (key) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = key;
+        input.value = payload[key];
+        bridge.appendChild(input);
+      });
+      document.body.appendChild(bridge);
+      bridge.submit();
+      window.setTimeout(function () {
+        bridge.remove();
+        rsvpCard.classList.add('is-sent');
+      }, 600);
     });
   }
 })();
