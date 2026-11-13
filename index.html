@@ -657,7 +657,7 @@ button { font: inherit; }
     </section>
   </main>
 
-  <audio id="bgMusic" src="musique.mp3" loop preload="metadata" playsinline></audio>
+  <audio id="bgMusic" src="musique.mp3" preload="metadata" playsinline></audio>
 
   <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
     <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3l4 3V7L6 10H3zm11.5 2a2.5 2.5 0 0 0-1.5-2.3v4.6a2.5 2.5 0 0 0 1.5-2.3zm-1.5-6.2v1.6a4.5 4.5 0 0 1 0 9.2v1.6a6.1 6.1 0 0 0 0-12.4z"/></svg>
@@ -678,7 +678,18 @@ button { font: inherit; }
 
   var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzVVhnRpjEKeAosWOzwWkkvgvrwpMlbkJ6H3BXjbr-AlzO-1nu6ir3Wvhmw5l6Z81XkfQ/exec';
 
+  var MUSIC_START = 30; /* démarrage à 0:30 */
   music.volume = 0.48;
+
+  function seekToStart() {
+    try { music.currentTime = MUSIC_START; } catch (e) {}
+  }
+
+  music.addEventListener('loadedmetadata', seekToStart);
+  music.addEventListener('ended', function () {
+    seekToStart();
+    music.play().catch(function () {});
+  });
 
   function setMuted(muted) {
     music.muted = muted;
@@ -688,7 +699,9 @@ button { font: inherit; }
   }
 
   function startMusic() {
+    seekToStart();
     music.play().then(function () {
+      if (music.currentTime < MUSIC_START - 0.5) seekToStart();
       musicBtn.hidden = false;
       musicBtn.classList.add('is-on');
       setMuted(false);
@@ -722,6 +735,7 @@ button { font: inherit; }
   musicBtn.addEventListener('click', function () {
     if (music.paused) {
       music.muted = false;
+      seekToStart();
       music.play().then(function () { setMuted(false); }).catch(function () {});
       return;
     }
