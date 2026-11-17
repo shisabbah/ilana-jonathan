@@ -25,7 +25,7 @@
 <link rel="apple-touch-icon" href="logo2.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
 :root {
@@ -286,6 +286,20 @@ button { font: inherit; }
   justify-content: center;
 }
 
+.page--rsvp .page-title {
+  font-weight: 700;
+  font-size: clamp(1rem, 3.4vw, 1.2rem);
+  letter-spacing: 0.28em;
+  color: var(--ink);
+}
+
+.page--rsvp .page-rule {
+  width: 3.2rem;
+  height: 1.5px;
+  opacity: 1;
+  background: var(--accent-deep);
+}
+
 .rsvp-panel {
   width: min(100%, 26rem);
   background-color: var(--paper);
@@ -301,8 +315,9 @@ button { font: inherit; }
   margin: 0.35rem 0 1.25rem;
   font-family: var(--font-display);
   font-style: italic;
-  font-size: 1rem;
-  color: var(--soft);
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ink);
 }
 
 .rsvp-form {
@@ -313,6 +328,15 @@ button { font: inherit; }
   flex-direction: column;
   gap: 1.35rem;
   text-align: left;
+}
+
+.page--rsvp .field label,
+.page--rsvp .field-label {
+  font-weight: 700;
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  color: var(--ink);
 }
 
 .field label,
@@ -364,11 +388,11 @@ button { font: inherit; }
   width: auto;
   float: none;
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 0.78rem;
-  letter-spacing: 0.22em;
+  font-weight: 700;
+  font-size: 0.88rem;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--accent-deep);
+  color: var(--ink);
   text-align: center;
 }
 .event-meta {
@@ -409,12 +433,12 @@ button { font: inherit; }
   align-items: center;
   justify-content: center;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-style: italic;
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
   text-align: center;
-  color: var(--soft);
+  color: var(--ink);
   border: 1px solid var(--accent);
   background: color-mix(in srgb, var(--paper) 70%, transparent);
   cursor: pointer;
@@ -422,7 +446,8 @@ button { font: inherit; }
 }
 .choice input:checked + label {
   border-color: var(--accent-deep);
-  color: var(--accent-deep);
+  color: var(--ink);
+  font-weight: 700;
   background: var(--accent-light);
 }
 .choice input:focus-visible + label {
@@ -434,24 +459,25 @@ button { font: inherit; }
   appearance: none;
   align-self: center;
   margin-top: 0.2rem;
-  padding: 0.8rem 1.55rem;
-  min-height: 2.85rem;
+  padding: 0.85rem 1.7rem;
+  min-height: 2.95rem;
   font-family: var(--font-display);
-  font-weight: 500;
-  font-style: italic;
-  font-size: 0.8rem;
-  letter-spacing: 0.16em;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 0.88rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--accent-deep);
-  background: transparent;
-  border: 1px solid var(--accent);
+  color: var(--paper);
+  background: var(--accent-deep);
+  border: 1px solid var(--accent-deep);
   cursor: pointer;
-  transition: background-color 0.25s ease, border-color 0.25s ease;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 .submit:hover,
 .submit:focus-visible {
-  background: var(--accent-light);
-  border-color: var(--accent-deep);
+  background: var(--ink);
+  border-color: var(--ink);
+  color: var(--paper);
   outline: none;
 }
 .submit:disabled {
@@ -592,8 +618,8 @@ button { font: inherit; }
       </header>
       <figure class="card">
         <img
-          src="houppa3.png"
-          alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 15h00 au Domaine des Calanques"
+          src="houppa.png"
+          alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 17h00 au Domaine de la Galinière"
           width="941"
           height="1672"
           decoding="async"
@@ -633,7 +659,7 @@ button { font: inherit; }
 
           <fieldset class="field event-block" id="blockHouppa">
             <legend class="event-name" id="labelHouppaRsvp">La Houppa</legend>
-            <p class="event-meta">Jeudi 27 mai · 15h00</p>
+            <p class="event-meta">Jeudi 27 mai · 17h00</p>
             <div class="choice" role="group" aria-labelledby="labelHouppaRsvp">
               <input type="radio" id="houppaYes" name="houppa" value="oui" required>
               <label for="houppaYes">Oui</label>
