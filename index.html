@@ -552,17 +552,6 @@ button { font: inherit; }
 .rsvp-block.is-sent .rsvp-form { display: none; }
 .rsvp-block.is-sent .rsvp-thanks { display: block; }
 
-/* Safari iOS ignore une iframe en display:none et ouvre
-   la réponse dans la page au lieu du cadre caché. */
-#rsvpFrame {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  border: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* ========== MUSIQUE ========== */
 .music-btn {
   position: fixed;
@@ -687,7 +676,7 @@ button { font: inherit; }
       <div class="rsvp-panel rsvp-block" id="rsvpCard">
         <p class="rsvp-lead">Merci de confirmer pour chaque cérémonie</p>
 
-        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="https://script.google.com/macros/s/AKfycbwgHlk1XlvJXw2H9hcCkjqslkpYhpo4YjBX2FvcOEDF6Yc89ELNBHtaKB8ahdpmHWV_jg/exec" target="rsvpFrame">
+        <form class="rsvp-form" id="rsvpForm" name="rsvp">
           <div class="field">
             <label for="rsvpName">Nom &amp; prénom</label>
             <input id="rsvpName" name="name" type="text" autocomplete="name" required>
@@ -724,13 +713,13 @@ button { font: inherit; }
           </fieldset>
 
           <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
+          <p class="rsvp-error" id="rsvpError" role="alert">Impossible d'envoyer votre réponse. Réessayez dans un instant.</p>
         </form>
 
         <p class="rsvp-thanks" role="status" aria-live="polite">
           Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
         </p>
       </div>
-      <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP"></iframe>
     </section>
   </main>
 
@@ -750,7 +739,7 @@ button { font: inherit; }
   var rsvpForm = document.getElementById('rsvpForm');
   var rsvpCard = document.getElementById('rsvpCard');
   var rsvpSubmit = document.getElementById('rsvpSubmit');
-  var rsvpFrame = document.getElementById('rsvpFrame');
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmLOmxq1DDFndNYYMsGY_DOc2SvtVayNLo-9rSuVxQMX50cuTfAe48cDqILEgqZNYnMA/exec';
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -854,24 +843,37 @@ button { font: inherit; }
       });
     });
 
-    var sending = false;
     rsvpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
       var nameInput = document.getElementById('rsvpName');
       nameInput.value = nameInput.value.replace(/\s+/g, ' ').trim();
       if (!nameInput.value) {
-        e.preventDefault();
         nameInput.reportValidity();
         return;
       }
-      sending = true;
+      if (!rsvpForm.reportValidity()) return;
+
+      rsvpCard.classList.remove('has-error');
       rsvpSubmit.disabled = true;
       rsvpSubmit.textContent = 'Envoi…';
-    });
 
-    rsvpFrame.addEventListener('load', function () {
-      if (!sending) return;
-      sending = false;
-      rsvpCard.classList.add('is-sent');
+      /* Requête simple : pas d'en-tête, pas de JSON, pas de lecture
+         de la réponse. Si Safari bloque fetch, sendBeacon reprend. */
+      var body = new URLSearchParams(new FormData(rsvpForm));
+      fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: body, keepalive: true })
+        .then(function () {
+          rsvpCard.classList.add('is-sent');
+        })
+        .catch(function () {
+          var sent = navigator.sendBeacon && navigator.sendBeacon(SCRIPT_URL, body);
+          if (sent) {
+            rsvpCard.classList.add('is-sent');
+            return;
+          }
+          rsvpCard.classList.add('has-error');
+          rsvpSubmit.disabled = false;
+          rsvpSubmit.textContent = 'Envoyer';
+        });
     });
   }
 })();
