@@ -676,10 +676,8 @@ button { font: inherit; }
       <div class="rsvp-panel rsvp-block" id="rsvpCard">
         <p class="rsvp-lead">Merci de confirmer pour chaque cérémonie</p>
 
-        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="/" data-netlify="true" novalidate>
+        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="/merci" netlify>
           <input type="hidden" name="form-name" value="rsvp">
-          <input type="hidden" name="presence" id="rsvpPresence">
-          <input type="hidden" name="guests" id="rsvpGuests">
           <div class="field">
             <label for="rsvpName">Nom &amp; prénom</label>
             <input id="rsvpName" name="name" type="text" autocomplete="name" required>
@@ -716,12 +714,7 @@ button { font: inherit; }
           </fieldset>
 
           <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
-          <p class="rsvp-error" id="rsvpError" role="alert">Impossible d’envoyer pour le moment. Réessaie un peu plus tard.</p>
         </form>
-
-        <p class="rsvp-thanks" role="status" aria-live="polite">
-          Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
-        </p>
       </div>
     </section>
   </main>
@@ -740,8 +733,6 @@ button { font: inherit; }
   var music = document.getElementById('bgMusic');
   var musicBtn = document.getElementById('musicBtn');
   var rsvpForm = document.getElementById('rsvpForm');
-  var rsvpCard = document.getElementById('rsvpCard');
-  var rsvpSubmit = document.getElementById('rsvpSubmit');
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -825,25 +816,12 @@ button { font: inherit; }
     if (!block || !guests) return;
     var absent = value === 'non';
     block.classList.toggle('is-absent', absent);
-    guests.disabled = absent;
+    guests.readOnly = absent;
     guests.required = !absent;
     guests.min = absent ? '0' : '1';
     guests.setCustomValidity('');
     if (absent) guests.value = '0';
     else if (guests.value === '' || guests.value === '0') guests.value = '1';
-  }
-
-  function guestCountInvalid(radioName, inputId) {
-    var chosen = rsvpForm.querySelector('input[name="' + radioName + '"]:checked');
-    var input = document.getElementById(inputId);
-    if (!chosen || chosen.value !== 'oui') {
-      input.setCustomValidity('');
-      return false;
-    }
-    var count = Number(input.value);
-    var invalid = input.value === '' || !isFinite(count) || count < 1 || count > 20;
-    input.setCustomValidity(invalid ? 'Indiquez au moins une personne.' : '');
-    return invalid;
   }
 
   if (rsvpForm) {
@@ -855,61 +833,6 @@ button { font: inherit; }
     rsvpForm.querySelectorAll('input[name="houppa"]').forEach(function (el) {
       el.addEventListener('change', function () {
         syncGuestField('blockHouppa', 'houppaGuests', el.value);
-      });
-    });
-  }
-
-  if (rsvpForm && rsvpCard) {
-    rsvpForm.addEventListener('submit', function (e) {
-      e.preventDefault();
-      rsvpCard.classList.remove('has-error');
-
-      var nameInput = document.getElementById('rsvpName');
-      nameInput.value = nameInput.value.replace(/\s+/g, ' ').trim();
-      nameInput.setCustomValidity(nameInput.value ? '' : 'Indiquez votre nom et votre prénom.');
-      guestCountInvalid('mairie', 'mairieGuests');
-      guestCountInvalid('houppa', 'houppaGuests');
-
-      if (!rsvpForm.checkValidity()) {
-        rsvpForm.reportValidity();
-        return;
-      }
-
-      var mairieEl = rsvpForm.querySelector('input[name="mairie"]:checked');
-      var houppaEl = rsvpForm.querySelector('input[name="houppa"]:checked');
-      var mairieGuests = document.getElementById('mairieGuests').value;
-      var houppaGuests = document.getElementById('houppaGuests').value;
-      var name = nameInput.value;
-      document.getElementById('rsvpPresence').value = [
-        'Mairie: ' + (mairieEl ? mairieEl.value : '') + ' (' + mairieGuests + ')',
-        'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
-      ].join(' · ');
-      document.getElementById('rsvpGuests').value = mairieGuests + ' / ' + houppaGuests;
-
-      if (rsvpSubmit) {
-        rsvpSubmit.disabled = true;
-        rsvpSubmit.textContent = 'Envoi…';
-      }
-
-      /* Les champs désactivés (invité à 0) sont exclus du FormData. */
-      var disabledFields = rsvpForm.querySelectorAll('input:disabled');
-      disabledFields.forEach(function (el) { el.disabled = false; });
-      var body = new URLSearchParams(new FormData(rsvpForm)).toString();
-      disabledFields.forEach(function (el) { el.disabled = true; });
-
-      fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: body
-      }).then(function (res) {
-        if (!res.ok) throw new Error('status');
-        rsvpCard.classList.add('is-sent');
-      }).catch(function () {
-        rsvpCard.classList.add('has-error');
-        if (rsvpSubmit) {
-          rsvpSubmit.disabled = false;
-          rsvpSubmit.textContent = 'Envoyer';
-        }
       });
     });
   }
