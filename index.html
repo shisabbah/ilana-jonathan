@@ -286,6 +286,45 @@ button { font: inherit; }
   justify-content: center;
 }
 
+/* Téléphone : le formulaire dépasse l’écran. Le snap recale
+   la page en haut et le bouton Envoyer reste hors de portée. */
+@media (max-height: 920px) {
+  .page--rsvp {
+    justify-content: flex-start;
+    scroll-snap-align: none;
+    scroll-snap-stop: normal;
+    min-height: 0;
+    gap: 0.7rem;
+    padding-top: max(0.85rem, env(safe-area-inset-top));
+    padding-bottom: max(4.5rem, calc(env(safe-area-inset-bottom) + 3.5rem));
+  }
+  .page--rsvp .rsvp-panel {
+    padding: 0.85rem 1rem 0.95rem;
+  }
+  .page--rsvp .rsvp-lead {
+    margin: 0 0 0.45rem;
+    font-size: 1rem;
+  }
+  .page--rsvp .rsvp-form {
+    gap: 0.65rem;
+  }
+  .page--rsvp .event-block {
+    gap: 0.3rem;
+    padding: 0.5rem 0.65rem 0.55rem;
+  }
+  .page--rsvp .event-meta {
+    margin: 0 0 0.1rem;
+  }
+  .page--rsvp .choice label {
+    min-height: 2.35rem;
+    padding: 0.4rem;
+  }
+  .page--rsvp .event-block .guest-field {
+    margin-top: 0.15rem;
+    padding-top: 0.4rem;
+  }
+}
+
 .page--rsvp .page-title {
   font-weight: 700;
   font-size: clamp(1rem, 3.4vw, 1.2rem);
@@ -414,6 +453,7 @@ button { font: inherit; }
 }
 
 .choice {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.45rem;
@@ -423,7 +463,12 @@ button { font: inherit; }
   opacity: 0;
   width: 1px;
   height: 1px;
+  margin: 0;
   overflow: hidden;
+}
+.choice label {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .choice label {
   margin: 0;
@@ -508,6 +553,21 @@ button { font: inherit; }
 }
 .rsvp-block.is-sent .rsvp-form { display: none; }
 .rsvp-block.is-sent .rsvp-thanks { display: block; }
+
+/* Safari iOS ignore une iframe en display:none et envoie
+   le formulaire dans la page au lieu du cadre caché. */
+#rsvpFrame {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  left: 0;
+  bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+}
 
 /* ========== MUSIQUE ========== */
 .music-btn {
@@ -683,7 +743,7 @@ button { font: inherit; }
     </section>
   </main>
 
-  <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP" hidden></iframe>
+  <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP"></iframe>
   <audio id="bgMusic" src="musique.mp3" preload="metadata" playsinline></audio>
 
   <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
@@ -843,7 +903,14 @@ button { font: inherit; }
       bridge.method = 'POST';
       bridge.action = RSVP_SCRIPT_URL;
       bridge.target = 'rsvpFrame';
-      bridge.style.display = 'none';
+      bridge.setAttribute('novalidate', '');
+      bridge.style.position = 'absolute';
+      bridge.style.left = '0';
+      bridge.style.top = '0';
+      bridge.style.width = '1px';
+      bridge.style.height = '1px';
+      bridge.style.opacity = '0';
+      bridge.style.pointerEvents = 'none';
       Object.keys(payload).forEach(function (key) {
         var input = document.createElement('input');
         input.type = 'hidden';
