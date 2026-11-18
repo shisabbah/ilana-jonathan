@@ -552,6 +552,17 @@ button { font: inherit; }
 .rsvp-block.is-sent .rsvp-form { display: none; }
 .rsvp-block.is-sent .rsvp-thanks { display: block; }
 
+/* Safari iOS ignore une iframe en display:none et ouvre
+   la réponse dans la page au lieu du cadre caché. */
+#rsvpFrame {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  border: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* ========== MUSIQUE ========== */
 .music-btn {
   position: fixed;
@@ -676,8 +687,7 @@ button { font: inherit; }
       <div class="rsvp-panel rsvp-block" id="rsvpCard">
         <p class="rsvp-lead">Merci de confirmer pour chaque cérémonie</p>
 
-        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="/merci" netlify>
-          <input type="hidden" name="form-name" value="rsvp">
+        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="https://script.google.com/macros/s/AKfycbwgHlk1XlvJXw2H9hcCkjqslkpYhpo4YjBX2FvcOEDF6Yc89ELNBHtaKB8ahdpmHWV_jg/exec" target="rsvpFrame">
           <div class="field">
             <label for="rsvpName">Nom &amp; prénom</label>
             <input id="rsvpName" name="name" type="text" autocomplete="name" required>
@@ -715,7 +725,12 @@ button { font: inherit; }
 
           <button type="submit" class="submit" id="rsvpSubmit">Envoyer</button>
         </form>
+
+        <p class="rsvp-thanks" role="status" aria-live="polite">
+          Merci pour votre réponse.<br>Au plaisir de célébrer avec vous.
+        </p>
       </div>
+      <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP"></iframe>
     </section>
   </main>
 
@@ -733,6 +748,9 @@ button { font: inherit; }
   var music = document.getElementById('bgMusic');
   var musicBtn = document.getElementById('musicBtn');
   var rsvpForm = document.getElementById('rsvpForm');
+  var rsvpCard = document.getElementById('rsvpCard');
+  var rsvpSubmit = document.getElementById('rsvpSubmit');
+  var rsvpFrame = document.getElementById('rsvpFrame');
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -834,6 +852,26 @@ button { font: inherit; }
       el.addEventListener('change', function () {
         syncGuestField('blockHouppa', 'houppaGuests', el.value);
       });
+    });
+
+    var sending = false;
+    rsvpForm.addEventListener('submit', function (e) {
+      var nameInput = document.getElementById('rsvpName');
+      nameInput.value = nameInput.value.replace(/\s+/g, ' ').trim();
+      if (!nameInput.value) {
+        e.preventDefault();
+        nameInput.reportValidity();
+        return;
+      }
+      sending = true;
+      rsvpSubmit.disabled = true;
+      rsvpSubmit.textContent = 'Envoi…';
+    });
+
+    rsvpFrame.addEventListener('load', function () {
+      if (!sending) return;
+      sending = false;
+      rsvpCard.classList.add('is-sent');
     });
   }
 })();
