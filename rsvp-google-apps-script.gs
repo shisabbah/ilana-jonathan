@@ -71,9 +71,34 @@ function getSheet_() {
   return sheet;
 }
 
+function invalidReason_(data) {
+  var name = String(data.name || '').replace(/\s+/g, ' ').trim();
+  if (!name) return 'Nom manquant.';
+
+  function guestsOk(answer, count) {
+    var present = String(answer || '').toLowerCase() === 'oui';
+    var absent = String(answer || '').toLowerCase() === 'non';
+    if (!present && !absent) return false;
+    var n = Number(count);
+    if (present) return isFinite(n) && n >= 1 && n <= 20;
+    return count === '' || count == null || (isFinite(n) && n >= 0 && n <= 20);
+  }
+
+  if (!guestsOk(data.mairie, data.mairieGuests)) return 'Réponse Mairie invalide.';
+  if (!guestsOk(data.houppa, data.houppaGuests)) return 'Réponse Houppa invalide.';
+  return '';
+}
+
 function doPost(e) {
   try {
     var data = parseBody_(e);
+    var reason = invalidReason_(data);
+    if (reason) {
+      return ContentService
+        .createTextOutput(JSON.stringify({ ok: false, error: reason }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+    data.name = String(data.name).replace(/\s+/g, ' ').trim();
     var sheet = getSheet_();
 
     sheet.appendRow([

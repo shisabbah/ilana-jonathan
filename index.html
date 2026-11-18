@@ -252,9 +252,6 @@ button { font: inherit; }
   display: block;
   width: 100%;
   height: auto;
-  max-height: calc(100dvh - 6.5rem);
-  object-fit: contain;
-  object-position: center top;
   background: var(--paper);
 }
 
@@ -554,21 +551,6 @@ button { font: inherit; }
 .rsvp-block.is-sent .rsvp-form { display: none; }
 .rsvp-block.is-sent .rsvp-thanks { display: block; }
 
-/* Safari iOS ignore une iframe en display:none et envoie
-   le formulaire dans la page au lieu du cadre caché. */
-#rsvpFrame {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  left: 0;
-  bottom: 0;
-  opacity: 0;
-  pointer-events: none;
-}
-
 /* ========== MUSIQUE ========== */
 .music-btn {
   position: fixed;
@@ -621,9 +603,6 @@ button { font: inherit; }
     width: min(100%, 28rem);
     box-shadow: 0 1.35rem 2.8rem -1.5rem rgba(59, 46, 66, 0.14);
   }
-  .card img {
-    max-height: calc(100dvh - 7.5rem);
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -663,7 +642,7 @@ button { font: inherit; }
       <figure class="card">
         <img
           src="mairie1.png"
-          alt="Invitation — La Mairie : Ilana et Jonathan se diront oui le 25 mai 2027 à 14h30, Mairie Bagatelle, Marseille"
+          alt="Invitation — La Mairie : Ilana et Jonathan se diront oui le 25 mai 2027 à 14h, Mairie Bagatelle, 125 rue du Commandant Rolland, 13008 Marseille"
           width="1056"
           height="1489"
           decoding="async">
@@ -679,7 +658,7 @@ button { font: inherit; }
       <figure class="card">
         <img
           src="houppa.png"
-          alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 17h00 au Domaine de la Galinière"
+          alt="Invitation — La Houppa : cérémonie religieuse le jeudi 27 mai à 17h00 au Domaine de la Galinière, D7N, 13790 Châteauneuf-le-Rouge"
           width="941"
           height="1672"
           decoding="async"
@@ -696,7 +675,10 @@ button { font: inherit; }
       <div class="rsvp-panel rsvp-block" id="rsvpCard">
         <p class="rsvp-lead">Merci de confirmer pour chaque cérémonie</p>
 
-        <form class="rsvp-form" id="rsvpForm" novalidate>
+        <form class="rsvp-form" id="rsvpForm" name="rsvp" method="POST" action="/" data-netlify="true" novalidate>
+          <input type="hidden" name="form-name" value="rsvp">
+          <input type="hidden" name="presence" id="rsvpPresence">
+          <input type="hidden" name="guests" id="rsvpGuests">
           <div class="field">
             <label for="rsvpName">Nom &amp; prénom</label>
             <input id="rsvpName" name="name" type="text" autocomplete="name" required>
@@ -713,7 +695,7 @@ button { font: inherit; }
             </div>
             <div class="guest-field">
               <label for="mairieGuests">Nombre pour la Mairie</label>
-              <input id="mairieGuests" name="mairieGuests" type="number" min="0" max="20" value="1" inputmode="numeric">
+              <input id="mairieGuests" name="mairieGuests" type="number" min="1" max="20" value="1" inputmode="numeric" required>
             </div>
           </fieldset>
 
@@ -728,7 +710,7 @@ button { font: inherit; }
             </div>
             <div class="guest-field">
               <label for="houppaGuests">Nombre pour la Houppa</label>
-              <input id="houppaGuests" name="houppaGuests" type="number" min="0" max="20" value="1" inputmode="numeric">
+              <input id="houppaGuests" name="houppaGuests" type="number" min="1" max="20" value="1" inputmode="numeric" required>
             </div>
           </fieldset>
 
@@ -743,7 +725,6 @@ button { font: inherit; }
     </section>
   </main>
 
-  <iframe name="rsvpFrame" id="rsvpFrame" title="Envoi RSVP"></iframe>
   <audio id="bgMusic" src="musique.mp3" preload="metadata" playsinline></audio>
 
   <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
@@ -762,8 +743,6 @@ button { font: inherit; }
   var rsvpSubmit = document.getElementById('rsvpSubmit');
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  var RSVP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzTrPyQIljOIO7eeW-1imAFalG6aAGEMNifmPE9npAzwI-E9s39a8GUbbw409fcjMua2w/exec';
 
   var MUSIC_START = 30; /* démarrage à 0:30 */
   music.volume = 0.48;
@@ -846,8 +825,24 @@ button { font: inherit; }
     var absent = value === 'non';
     block.classList.toggle('is-absent', absent);
     guests.disabled = absent;
+    guests.required = !absent;
+    guests.min = absent ? '0' : '1';
+    guests.setCustomValidity('');
     if (absent) guests.value = '0';
-    else if (guests.value === '0') guests.value = '1';
+    else if (guests.value === '' || guests.value === '0') guests.value = '1';
+  }
+
+  function guestCountInvalid(radioName, inputId) {
+    var chosen = rsvpForm.querySelector('input[name="' + radioName + '"]:checked');
+    var input = document.getElementById(inputId);
+    if (!chosen || chosen.value !== 'oui') {
+      input.setCustomValidity('');
+      return false;
+    }
+    var count = Number(input.value);
+    var invalid = input.value === '' || !isFinite(count) || count < 1 || count > 20;
+    input.setCustomValidity(invalid ? 'Indiquez au moins une personne.' : '');
+    return invalid;
   }
 
   if (rsvpForm) {
@@ -868,6 +863,12 @@ button { font: inherit; }
       e.preventDefault();
       rsvpCard.classList.remove('has-error');
 
+      var nameInput = document.getElementById('rsvpName');
+      nameInput.value = nameInput.value.replace(/\s+/g, ' ').trim();
+      nameInput.setCustomValidity(nameInput.value ? '' : 'Indiquez votre nom et votre prénom.');
+      guestCountInvalid('mairie', 'mairieGuests');
+      guestCountInvalid('houppa', 'houppaGuests');
+
       if (!rsvpForm.checkValidity()) {
         rsvpForm.reportValidity();
         return;
@@ -875,55 +876,40 @@ button { font: inherit; }
 
       var mairieEl = rsvpForm.querySelector('input[name="mairie"]:checked');
       var houppaEl = rsvpForm.querySelector('input[name="houppa"]:checked');
-      var mairieGuests = document.getElementById('mairieGuests').value || '0';
-      var houppaGuests = document.getElementById('houppaGuests').value || '0';
-      var name = (document.getElementById('rsvpName').value || '').trim();
-      var presence = [
+      var mairieGuests = document.getElementById('mairieGuests').value;
+      var houppaGuests = document.getElementById('houppaGuests').value;
+      var name = nameInput.value;
+      document.getElementById('rsvpPresence').value = [
         'Mairie: ' + (mairieEl ? mairieEl.value : '') + ' (' + mairieGuests + ')',
         'Houppa: ' + (houppaEl ? houppaEl.value : '') + ' (' + houppaGuests + ')'
       ].join(' · ');
-
-      var payload = {
-        name: name,
-        mairie: mairieEl ? mairieEl.value : '',
-        houppa: houppaEl ? houppaEl.value : '',
-        mairieGuests: String(mairieGuests),
-        houppaGuests: String(houppaGuests),
-        presence: presence,
-        guests: mairieGuests + ' / ' + houppaGuests
-      };
+      document.getElementById('rsvpGuests').value = mairieGuests + ' / ' + houppaGuests;
 
       if (rsvpSubmit) {
         rsvpSubmit.disabled = true;
         rsvpSubmit.textContent = 'Envoi…';
       }
 
-      /* POST via formulaire + iframe : contourne le 401 du fetch vers Apps Script */
-      var bridge = document.createElement('form');
-      bridge.method = 'POST';
-      bridge.action = RSVP_SCRIPT_URL;
-      bridge.target = 'rsvpFrame';
-      bridge.setAttribute('novalidate', '');
-      bridge.style.position = 'absolute';
-      bridge.style.left = '0';
-      bridge.style.top = '0';
-      bridge.style.width = '1px';
-      bridge.style.height = '1px';
-      bridge.style.opacity = '0';
-      bridge.style.pointerEvents = 'none';
-      Object.keys(payload).forEach(function (key) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = key;
-        input.value = payload[key];
-        bridge.appendChild(input);
-      });
-      document.body.appendChild(bridge);
-      bridge.submit();
-      window.setTimeout(function () {
-        bridge.remove();
+      /* Les champs désactivés (invité à 0) sont exclus du FormData. */
+      var disabledFields = rsvpForm.querySelectorAll('input:disabled');
+      disabledFields.forEach(function (el) { el.disabled = false; });
+      var body = new URLSearchParams(new FormData(rsvpForm)).toString();
+      disabledFields.forEach(function (el) { el.disabled = true; });
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body
+      }).then(function (res) {
+        if (!res.ok) throw new Error('status');
         rsvpCard.classList.add('is-sent');
-      }, 600);
+      }).catch(function () {
+        rsvpCard.classList.add('has-error');
+        if (rsvpSubmit) {
+          rsvpSubmit.disabled = false;
+          rsvpSubmit.textContent = 'Envoyer';
+        }
+      });
     });
   }
 })();

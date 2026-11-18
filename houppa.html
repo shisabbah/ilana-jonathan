@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ilana &amp; Jonathan — La Houppa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
   --accent: #B7A0CC;
@@ -14,14 +17,14 @@
   --ink: #3B2E42;
   --soft: #8A7B90;
 }
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
-  body { margin: 0; }
-  a { color: inherit; text-decoration: none; }
-
+html, body { margin: 0; background: var(--bg); overflow-x: hidden; }
+a { color: inherit; text-decoration: none; }
+.stage { width: 100%; overflow: hidden; }
+.board { width: 1440px; transform-origin: top left; }
 </style>
 </head>
 <body>
-<div style="width: 1440px; height: 1340px; box-sizing: border-box; position: relative; background: var(--bg); overflow: hidden; font-family: 'EB Garamond', Georgia, serif;">
+<div class="stage"><div class="board" style="height: 1340px; box-sizing: border-box; position: relative; background: var(--bg); overflow: hidden; font-family: 'EB Garamond', Georgia, serif;">
 
   <svg width="0" height="0" style="position: absolute;">
     <filter id="grainH">
@@ -65,7 +68,7 @@
         <div style="margin-top: 14px; font-size: 15.5px; color: var(--soft); line-height: 1.7; max-width: 420px;">seraient honorés de votre présence à la houppa qui sera célébrée le</div>
 
         <div style="margin-top: 14px; font-family: 'Playfair Display', serif; font-weight: 700; font-size: 74px; color: var(--ink); line-height: 1;">27 Mai 2027</div>
-        <div style="margin-top: 6px; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 24px; color: var(--ink);">Heure à confirmer</div>
+        <div style="margin-top: 6px; font-family: 'Playfair Display', serif; font-weight: 600; font-size: 24px; color: var(--ink);">17h00</div>
 
         <div style="margin-top: 16px; font-family: 'Cormorant Garamond', serif; font-style: italic; font-size: 17px; color: var(--soft);">suivie d'une réception</div>
 
@@ -76,7 +79,7 @@
         </div>
 
         <div style="font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 16px; letter-spacing: 2px; color: var(--ink); text-transform: uppercase;">Domaine de la Galinière</div>
-        <div style="margin-top: 4px; font-size: 13.5px; color: var(--soft);">Adresse — à préciser</div>
+        <div style="margin-top: 4px; font-size: 13.5px; color: var(--soft);">D7N, 13790 Châteauneuf-le-Rouge</div>
 
         <div style="margin-top: 26px; font-size: 12.5px; color: var(--soft); line-height: 1.7; max-width: 400px;">
           Une pensée particulière à Papi Gérard et Pierre, Mamie Denise et Maryse, Tata Josiane ז״ל
@@ -85,7 +88,19 @@
     </div>
   </div>
 
-</div>
-
+</div></div>
+<script>
+(function () {
+  var board = document.querySelector('.board');
+  var stage = document.querySelector('.stage');
+  function fit() {
+    var scale = Math.min(1, window.innerWidth / board.offsetWidth);
+    board.style.transform = 'scale(' + scale + ')';
+    stage.style.height = (board.offsetHeight * scale) + 'px';
+  }
+  fit();
+  window.addEventListener('resize', fit);
+})();
+</script>
 </body>
 </html>
