@@ -4,23 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Ilana &amp; Jonathan</title>
-<meta name="description" content="Ilana &amp; Jonathan ont le plaisir de vous convier à leur mariage le 27 Mai.">
+<meta name="description" content="Vous êtes invités au mariage d'Ilana et Jonathan">
 
 <meta property="og:type" content="website">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:site_name" content="Ilana &amp; Jonathan">
 <meta property="og:title" content="Ilana &amp; Jonathan">
-<meta property="og:description" content="leur mariage le 27 mai">
+<meta property="og:description" content="Vous êtes invités au mariage d'Ilana et Jonathan">
 <meta property="og:url" content="https://ilana-jonathan.netlify.app/">
-<meta property="og:image" content="https://ilana-jonathan.netlify.app/logo2.png">
-<meta property="og:image:type" content="image/png">
-<meta property="og:image:width" content="1024">
-<meta property="og:image:height" content="1024">
+<meta property="og:image" content="https://ilana-jonathan.netlify.app/logo-partage.jpg">
+<meta property="og:image:secure_url" content="https://ilana-jonathan.netlify.app/logo-partage.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="1200">
 <meta property="og:image:alt" content="Monogramme Ilana &amp; Jonathan">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Ilana &amp; Jonathan">
-<meta name="twitter:description" content="leur mariage le 27 mai">
-<meta name="twitter:image" content="https://ilana-jonathan.netlify.app/logo2.png">
+<meta name="twitter:description" content="Vous êtes invités au mariage d'Ilana et Jonathan">
+<meta name="twitter:image" content="https://ilana-jonathan.netlify.app/logo-partage.jpg">
 <link rel="icon" href="favicon.ico" sizes="any">
 <link rel="icon" type="image/png" href="logo2.png">
 <link rel="apple-touch-icon" href="logo2.png">
@@ -286,7 +287,7 @@ button { font: inherit; }
 
 /* Téléphone : le formulaire dépasse l’écran. Le snap recale
    la page en haut et le bouton Envoyer reste hors de portée. */
-@media (max-height: 920px) {
+@media (max-height: 1200px) {
   .page--rsvp {
     justify-content: flex-start;
     scroll-snap-align: none;
@@ -648,6 +649,23 @@ button { font: inherit; }
           height="1489"
           decoding="async">
       </figure>
+      <p class="page-nav"><a href="#henne">Continuer vers le Henné</a></p>
+    </section>
+
+    <section class="page" id="henne" aria-labelledby="titleHenne">
+      <header class="page-head">
+        <h2 class="page-title" id="titleHenne">Le Henné</h2>
+        <hr class="page-rule" aria-hidden="true">
+      </header>
+      <figure class="card">
+        <img
+          src="henne.png"
+          alt="Invitation — Le Henné : Sandra et Marie invitent au henné de leurs enfants Ilana et Jonathan, mardi 25 mai 2027 à 16h30, Villa La Palmeraie, 144 rue François Mauriac"
+          width="1886"
+          height="2828"
+          decoding="async"
+          loading="lazy">
+      </figure>
       <p class="page-nav"><a href="#houppa">Continuer vers la Houppa</a></p>
     </section>
 
@@ -697,6 +715,21 @@ button { font: inherit; }
             </div>
           </fieldset>
 
+          <fieldset class="field event-block" id="blockHenne">
+            <legend class="event-name" id="labelHenneRsvp">Le Henné</legend>
+            <p class="event-meta">Mardi 25 mai · 16h30</p>
+            <div class="choice" role="group" aria-labelledby="labelHenneRsvp">
+              <input type="radio" id="henneYes" name="henne" value="oui" required>
+              <label for="henneYes">Oui</label>
+              <input type="radio" id="henneNo" name="henne" value="non">
+              <label for="henneNo">Non</label>
+            </div>
+            <div class="guest-field">
+              <label for="henneGuests">Nombre pour le Henné</label>
+              <input id="henneGuests" name="henneGuests" type="number" min="1" max="20" value="1" inputmode="numeric" required>
+            </div>
+          </fieldset>
+
           <fieldset class="field event-block" id="blockHouppa">
             <legend class="event-name" id="labelHouppaRsvp">La Houppa</legend>
             <p class="event-meta">Jeudi 27 mai</p>
@@ -723,7 +756,7 @@ button { font: inherit; }
     </section>
   </main>
 
-  <audio id="bgMusic" src="musique.mp3" preload="metadata" playsinline></audio>
+  <audio id="bgMusic" src="musique.mp3#t=30" preload="auto" playsinline></audio>
 
   <button type="button" class="music-btn" id="musicBtn" aria-label="Couper la musique" aria-pressed="false" hidden>
     <svg class="icon-on" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10v4h3l4 3V7L6 10H3zm11.5 2a2.5 2.5 0 0 0-1.5-2.3v4.6a2.5 2.5 0 0 0 1.5-2.3zm-1.5-6.2v1.6a4.5 4.5 0 0 1 0 9.2v1.6a6.1 6.1 0 0 0 0-12.4z"/></svg>
@@ -739,18 +772,31 @@ button { font: inherit; }
   var rsvpForm = document.getElementById('rsvpForm');
   var rsvpCard = document.getElementById('rsvpCard');
   var rsvpSubmit = document.getElementById('rsvpSubmit');
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmLOmxq1DDFndNYYMsGY_DOc2SvtVayNLo-9rSuVxQMX50cuTfAe48cDqILEgqZNYnMA/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUNcrG2pbj1XfJY7Zv3CzvSKPydTmM2qFGCHLf1geN9X6kGSDgvxc070mEVHuBAD4cWw/exec';
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var MUSIC_START = 30; /* démarrage à 0:30 */
   music.volume = 0.48;
 
+  function atStart() {
+    return music.currentTime >= MUSIC_START - 0.6;
+  }
+
   function seekToStart() {
+    if (isFinite(music.duration) && music.duration <= MUSIC_START) return;
+    if (atStart()) return;
     try { music.currentTime = MUSIC_START; } catch (e) {}
   }
 
   music.addEventListener('loadedmetadata', seekToStart);
+  music.addEventListener('loadeddata', seekToStart);
+  music.addEventListener('canplay', seekToStart);
+  music.addEventListener('playing', seekToStart);
+  music.addEventListener('timeupdate', function () {
+    if (!opened || music.paused) return;
+    if (music.currentTime > 0.15 && music.currentTime < MUSIC_START - 0.6) seekToStart();
+  });
   music.addEventListener('ended', function () {
     seekToStart();
     music.play().catch(function () {});
@@ -766,7 +812,8 @@ button { font: inherit; }
   function startMusic() {
     seekToStart();
     music.play().then(function () {
-      if (music.currentTime < MUSIC_START - 0.5) seekToStart();
+      seekToStart();
+      window.setTimeout(seekToStart, 300);
       musicBtn.hidden = false;
       musicBtn.classList.add('is-on');
       setMuted(false);
@@ -835,6 +882,11 @@ button { font: inherit; }
     rsvpForm.querySelectorAll('input[name="mairie"]').forEach(function (el) {
       el.addEventListener('change', function () {
         syncGuestField('blockMairie', 'mairieGuests', el.value);
+      });
+    });
+    rsvpForm.querySelectorAll('input[name="henne"]').forEach(function (el) {
+      el.addEventListener('change', function () {
+        syncGuestField('blockHenne', 'henneGuests', el.value);
       });
     });
     rsvpForm.querySelectorAll('input[name="houppa"]').forEach(function (el) {
