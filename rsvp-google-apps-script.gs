@@ -1,5 +1,5 @@
 /**
- * RSVP → Google Sheets (Mairie / Henné / Houppa)
+ * RSVP → Google Sheets (Mairie / Houppa)
  * =======================================
  * 1. Colle TOUT ce fichier dans Apps Script
  * 2. Renseigne SPREADSHEET_ID (URL Sheet : /d/ID/edit)
@@ -10,18 +10,6 @@
  */
 
 var SHEET_NAME = 'RSVP';
-
-var HEADERS = [
-  'Timestamp',
-  'Nom',
-  'Mairie',
-  'Nb Mairie',
-  'Henné',
-  'Nb Henné',
-  'Houppa',
-  'Nb Houppa',
-  'Détail'
-];
 
 /** ID du tableur (obligatoire si le script n’est pas lié à la Sheet) */
 var SPREADSHEET_ID = '';
@@ -68,42 +56,19 @@ function getSheet_() {
     sheet = ss.insertSheet(SHEET_NAME);
   }
 
-  ensureHeaders_(sheet);
+  if (sheet.getLastRow() === 0) {
+    sheet.appendRow([
+      'Timestamp',
+      'Nom',
+      'Mairie',
+      'Nb Mairie',
+      'Houppa',
+      'Nb Houppa',
+      'Détail'
+    ]);
+  }
 
   return sheet;
-}
-
-function ensureHeaders_(sheet) {
-  if (sheet.getLastRow() === 0) {
-    sheet.appendRow(HEADERS);
-    return;
-  }
-
-  var width = Math.max(sheet.getLastColumn(), HEADERS.length);
-  var current = sheet.getRange(1, 1, 1, width).getValues()[0].map(function (cell) {
-    return String(cell || '').trim();
-  });
-
-  if (HEADERS.every(function (header, index) { return current[index] === header; })) {
-    return;
-  }
-
-  // Feuille déjà remplie : Mairie puis Houppa, sans colonne Henné.
-  var legacyWithoutHenne =
-    current[0] === 'Timestamp' &&
-    current[2] === 'Mairie' &&
-    current[4] === 'Houppa' &&
-    current.indexOf('Henné') === -1;
-
-  if (legacyWithoutHenne) {
-    sheet.insertColumnsAfter(4, 2);
-    sheet.getRange(1, 5, 1, 2).setValues([['Henné', 'Nb Henné']]);
-    return;
-  }
-
-  if (sheet.getLastRow() === 1) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
-  }
 }
 
 function invalidReason_(data) {
@@ -120,7 +85,6 @@ function invalidReason_(data) {
   }
 
   if (!guestsOk(data.mairie, data.mairieGuests)) return 'Réponse Mairie invalide.';
-  if (!guestsOk(data.henne, data.henneGuests)) return 'Réponse Henné invalide.';
   if (!guestsOk(data.houppa, data.houppaGuests)) return 'Réponse Houppa invalide.';
   return '';
 }
@@ -142,8 +106,6 @@ function doPost(e) {
       data.name || '',
       data.mairie || '',
       data.mairieGuests != null ? data.mairieGuests : '',
-      data.henne || '',
-      data.henneGuests != null ? data.henneGuests : '',
       data.houppa || '',
       data.houppaGuests != null ? data.houppaGuests : '',
       data.message || data.presence || ''
@@ -170,8 +132,6 @@ function doGet(e) {
         e.parameter.name,
         e.parameter.mairie || 'test',
         e.parameter.mairieGuests || '1',
-        e.parameter.henne || 'test',
-        e.parameter.henneGuests || '1',
         e.parameter.houppa || 'test',
         e.parameter.houppaGuests || '1',
         'test-get'

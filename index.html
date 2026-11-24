@@ -287,7 +287,7 @@ button { font: inherit; }
 
 /* Téléphone : le formulaire dépasse l’écran. Le snap recale
    la page en haut et le bouton Envoyer reste hors de portée. */
-@media (max-height: 1200px) {
+@media (max-height: 920px) {
   .page--rsvp {
     justify-content: flex-start;
     scroll-snap-align: none;
@@ -649,23 +649,6 @@ button { font: inherit; }
           height="1489"
           decoding="async">
       </figure>
-      <p class="page-nav"><a href="#henne">Continuer vers le Henné</a></p>
-    </section>
-
-    <section class="page" id="henne" aria-labelledby="titleHenne">
-      <header class="page-head">
-        <h2 class="page-title" id="titleHenne">Le Henné</h2>
-        <hr class="page-rule" aria-hidden="true">
-      </header>
-      <figure class="card">
-        <img
-          src="henne.png"
-          alt="Invitation — Le Henné : Sandra et Marie invitent au henné de leurs enfants Ilana et Jonathan, mardi 25 mai 2027 à 16h30, Villa La Palmeraie, 144 rue François Mauriac"
-          width="1886"
-          height="2828"
-          decoding="async"
-          loading="lazy">
-      </figure>
       <p class="page-nav"><a href="#houppa">Continuer vers la Houppa</a></p>
     </section>
 
@@ -715,21 +698,6 @@ button { font: inherit; }
             </div>
           </fieldset>
 
-          <fieldset class="field event-block" id="blockHenne">
-            <legend class="event-name" id="labelHenneRsvp">Le Henné</legend>
-            <p class="event-meta">Mardi 25 mai · 16h30</p>
-            <div class="choice" role="group" aria-labelledby="labelHenneRsvp">
-              <input type="radio" id="henneYes" name="henne" value="oui" required>
-              <label for="henneYes">Oui</label>
-              <input type="radio" id="henneNo" name="henne" value="non">
-              <label for="henneNo">Non</label>
-            </div>
-            <div class="guest-field">
-              <label for="henneGuests">Nombre pour le Henné</label>
-              <input id="henneGuests" name="henneGuests" type="number" min="1" max="20" value="1" inputmode="numeric" required>
-            </div>
-          </fieldset>
-
           <fieldset class="field event-block" id="blockHouppa">
             <legend class="event-name" id="labelHouppaRsvp">La Houppa</legend>
             <p class="event-meta">Jeudi 27 mai</p>
@@ -772,7 +740,7 @@ button { font: inherit; }
   var rsvpForm = document.getElementById('rsvpForm');
   var rsvpCard = document.getElementById('rsvpCard');
   var rsvpSubmit = document.getElementById('rsvpSubmit');
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxUNcrG2pbj1XfJY7Zv3CzvSKPydTmM2qFGCHLf1geN9X6kGSDgvxc070mEVHuBAD4cWw/exec';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxmLOmxq1DDFndNYYMsGY_DOc2SvtVayNLo-9rSuVxQMX50cuTfAe48cDqILEgqZNYnMA/exec';
   var opened = false;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -882,11 +850,6 @@ button { font: inherit; }
     rsvpForm.querySelectorAll('input[name="mairie"]').forEach(function (el) {
       el.addEventListener('change', function () {
         syncGuestField('blockMairie', 'mairieGuests', el.value);
-      });
-    });
-    rsvpForm.querySelectorAll('input[name="henne"]').forEach(function (el) {
-      el.addEventListener('change', function () {
-        syncGuestField('blockHenne', 'henneGuests', el.value);
       });
     });
     rsvpForm.querySelectorAll('input[name="houppa"]').forEach(function (el) {
